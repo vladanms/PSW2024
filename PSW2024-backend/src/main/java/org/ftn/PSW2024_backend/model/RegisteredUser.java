@@ -39,8 +39,8 @@ public class RegisteredUser extends User{
     @Column(name = "interests")
     private List<UserInterests> interests;
 
-	public RegisteredUser(Long id, String username, String password, String email, String name, String surname, List<UserInterests> interests) {
-		super(id, username, password, email, name, surname, UserType.RegisteredUser);
+	public RegisteredUser(String username, String password, String email, String name, String surname, List<UserInterests> interests) {
+		super(username, password, email, name, surname, UserType.RegisteredUser);
 		this.rewardPoints = 0;
 		this.penaltyPoints = 0;
 		this.isMalicious = false;

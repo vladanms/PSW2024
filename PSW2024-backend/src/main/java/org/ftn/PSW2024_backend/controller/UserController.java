@@ -1,0 +1,87 @@
+package org.ftn.PSW2024_backend.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.ftn.PSW2024_backend.service.UserService;
+import org.ftn.PSW2024_backend.dto.LoginDTO;
+import org.ftn.PSW2024_backend.dto.RegisterDTO;
+
+
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(value = "user")
+public class UserController {
+
+	@Autowired
+	private UserService userService;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+	
+	@PostMapping("/login")
+	public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request){
+		
+		 Map<String, String> response = new HashMap<>();
+		 try {
+	            String username = userService.authenticate(loginDTO);
+	            response.put("username", username); //this will be saved to localStorage on the frontend
+	            return ResponseEntity.ok(response);
+	        } catch (BadCredentialsException e) {
+	            response.put("error", e.getMessage());
+	            return ResponseEntity.badRequest().body(response);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            response.put("error", "An error occured while processing the login request.");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+	        }
+	}
+	
+	@PostMapping("/register")
+	public ResponseEntity<Map<String, String>> register(@RequestBody RegisterDTO userDTO) throws MessagingException, UnsupportedEncodingException
+	{
+
+		Map<String, String> response = new HashMap<>();
+		
+		try {
+			String register = userService.register(userDTO, passwordEncoder);
+		if(register.equals("usernameError"))
+		{
+			response.put("error", "Username taken. Please select another one.");
+			return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+		}
+		if(register.equals("emailError"))
+		{
+			response.put("error", "This e-mail is already registered.");
+			return new ResponseEntity<>(response,HttpStatus.BAD_REQUEST);
+		}
+		response.put("registered", userDTO.getUsername());
+		return new ResponseEntity<>(response, HttpStatus.OK);
+		 } catch (Exception e) {
+		        e.printStackTrace();
+		        response.put("error", "An error occurred while processing the registration request.");
+		        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		    }
+	}
+	
+}

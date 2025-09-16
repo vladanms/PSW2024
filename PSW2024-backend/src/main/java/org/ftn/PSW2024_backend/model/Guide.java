@@ -31,8 +31,8 @@ public class Guide extends User{
 	@Column(unique = false, nullable = false)
 	private boolean isAwarded;
 	
-	public Guide(Long id, String username, String password, String email, String name, String surname) {
-		super(id, username, password, email, name, surname, UserType.RegisteredUser);
+	public Guide(String username, String password, String email, String name, String surname) {
+		super(username, password, email, name, surname, UserType.RegisteredUser);
 		this.tours = new ArrayList<>();
 		this.rewardPoints = 0;
 		this.penaltyPoints = 0;

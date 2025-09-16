@@ -43,9 +43,8 @@ public class User {
     @Column(nullable = false)
     private UserType type;
 
-	public User(Long id, String username, String password, String email, String name, String surname, UserType type) {
+	public User(String username, String password, String email, String name, String surname, UserType type) {
 		super();
-		this.id = id;
 		this.username = username;
 		this.password = password;
 		this.email = email;
