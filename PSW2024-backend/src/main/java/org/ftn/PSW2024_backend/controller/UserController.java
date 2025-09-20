@@ -22,6 +22,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.ftn.PSW2024_backend.model.User;
 import org.ftn.PSW2024_backend.service.UserService;
 import org.ftn.PSW2024_backend.dto.LoginDTO;
 import org.ftn.PSW2024_backend.dto.RegisterDTO;
@@ -44,8 +45,9 @@ public class UserController {
 		
 		 Map<String, String> response = new HashMap<>();
 		 try {
-	            String username = userService.authenticate(loginDTO);
-	            response.put("username", username); //this will be saved to localStorage on the frontend
+	            User user = userService.authenticate(loginDTO);
+	            response.put("username", user.getUsername()); //this will be saved to localStorage on the frontend
+	            response.put("type", user.getType().toString());
 	            return ResponseEntity.ok(response);
 	        } catch (BadCredentialsException e) {
 	            response.put("error", e.getMessage());

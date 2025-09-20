@@ -57,13 +57,13 @@ public class UserService implements UserDetailsService {
 
 	}
 	
-	public String authenticate(LoginDTO loginDTO) {
+	public User authenticate(LoginDTO loginDTO) {
 		 try {
 			  Authentication auth = authenticationManager.authenticate(
 			            new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
 			        );
 			  		SecurityContextHolder.getContext().setAuthentication(auth);
-			        return loginDTO.getUsername();
+			        return users.findByUsername(loginDTO.getUsername());
 			 } 
 			 catch (AuthenticationException e) {
 				 throw new BadCredentialsException("Invalid username or password");
