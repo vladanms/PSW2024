@@ -43,8 +43,8 @@ public class UserService implements UserDetailsService {
             .password(user.getPassword());
 
         
-        if (user.getType().equals(UserType.RegisteredUser)) {
-            builder.roles("REGISTERED_USER");
+        if (user.getType().equals(UserType.Tourist)) {
+            builder.roles("TOURIST");
         } else if (user.getType().equals(UserType.Guide)) {
             builder.roles("GUIDE");
         } else if (user.getType().equals(UserType.Admin)) {
@@ -80,7 +80,7 @@ public class UserService implements UserDetailsService {
 			return "usernameError";
 		}
 		
-	    RegisteredUser newUser = new RegisteredUser(regDTO.getUsername(), regDTO.getPassword(), regDTO.getEmail(),
+	    Tourist newUser = new Tourist(regDTO.getUsername(), regDTO.getPassword(), regDTO.getEmail(),
 	    		regDTO.getName(), regDTO.getSurname(), regDTO.getInterests());
 		
 		users.save(newUser);

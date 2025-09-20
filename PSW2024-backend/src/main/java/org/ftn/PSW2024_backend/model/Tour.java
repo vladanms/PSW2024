@@ -1,5 +1,6 @@
 package org.ftn.PSW2024_backend.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -39,15 +39,17 @@ public class Tour {
 	@Column(name = "price", unique = false, nullable = false)
 	private int price;
 	
-    @ManyToOne
-    @JoinColumn(name = "guide_id", nullable = false)
-    private Guide guide;
+	@Column(name = "time", unique = false, nullable = false)
+	private LocalDateTime time;
+	
+    @Column(name = "guide_id", nullable = false)
+    private String guide;
     
     @ManyToMany
     @JoinTable(name = "users", 
     		   joinColumns = @JoinColumn(name = "tour_id"),
         inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<RegisteredUser> tourists;
+    private List<Tourist> tourists;
     
     @ElementCollection
     @CollectionTable(name = "keyPoints", joinColumns = @JoinColumn(name = "tour_id"))
@@ -63,14 +65,14 @@ public class Tour {
     @CollectionTable(name = "grades", joinColumns = @JoinColumn(name = "tour_id"))
     private List<Grade> grades; 
 
-	public Tour(Long id, String name, String description, int difficulty, int price, Guide guide) {
+	public Tour(String name, String description, int difficulty, int price, String guide, LocalDateTime time) {
 		super();
-		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.difficulty = difficulty;
 		this.price = price;
 		this.guide = guide;
+		this.time = time;
 		this.tourists = new ArrayList<>();
 		this.keyPoints = new ArrayList<>();
 		this.complaints = new ArrayList<>();
@@ -118,19 +120,19 @@ public class Tour {
 		this.price = price;
 	}
 
-	public Guide getGuide() {
+	public String getGuide() {
 		return guide;
 	}
 
-	public void setGuide(Guide guide) {
+	public void setGuide(String guide) {
 		this.guide = guide;
 	}
 
-	public List<RegisteredUser> getTourists() {
+	public List<Tourist> getTourists() {
 		return tourists;
 	}
 
-	public void setTourists(List<RegisteredUser> tourists) {
+	public void setTourists(List<Tourist> tourists) {
 		this.tourists = tourists;
 	}
 
@@ -164,6 +166,14 @@ public class Tour {
 
 	public void setGrades(List<Grade> grades) {
 		this.grades = grades;
+	}
+
+	public LocalDateTime getTime() {
+		return time;
+	}
+
+	public void setTime(LocalDateTime time) {
+		this.time = time;
 	}
 	
 	

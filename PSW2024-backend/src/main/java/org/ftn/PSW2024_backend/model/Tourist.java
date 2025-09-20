@@ -16,7 +16,7 @@ import javax.persistence.FetchType;
 
 @Entity
 @DiscriminatorValue("registeredUser")
-public class RegisteredUser extends User{
+public class Tourist extends User{
 
 	@Column(unique = false, nullable = false)
 	private int rewardPoints;
@@ -39,8 +39,8 @@ public class RegisteredUser extends User{
     @Column(name = "interests")
     private List<UserInterests> interests;
 
-	public RegisteredUser(String username, String password, String email, String name, String surname, List<UserInterests> interests) {
-		super(username, password, email, name, surname, UserType.RegisteredUser);
+	public Tourist(String username, String password, String email, String name, String surname, List<UserInterests> interests) {
+		super(username, password, email, name, surname, UserType.Tourist);
 		this.rewardPoints = 0;
 		this.penaltyPoints = 0;
 		this.isMalicious = false;

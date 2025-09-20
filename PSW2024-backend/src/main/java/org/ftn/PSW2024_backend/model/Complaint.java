@@ -23,7 +23,7 @@ public class Complaint {
 	
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
-    private RegisteredUser user; 
+    private Tourist user; 
 
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false, unique = false)
@@ -44,7 +44,7 @@ public class Complaint {
     private ComplaintStatus status;
 
 
-	public Complaint(Long id, RegisteredUser user, Tour tour, String name, String description, ComplaintStatus status) {
+	public Complaint(Long id, Tourist user, Tour tour, String name, String description, ComplaintStatus status) {
 		super();
 		this.id = id;
 		this.user = user;
@@ -65,12 +65,12 @@ public class Complaint {
 	}
 
 
-	public RegisteredUser getUser() {
+	public Tourist getUser() {
 		return user;
 	}
 
 
-	public void setUser(RegisteredUser user) {
+	public void setUser(Tourist user) {
 		this.user = user;
 	}
 

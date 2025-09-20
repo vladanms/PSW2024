@@ -32,7 +32,7 @@ public class Guide extends User{
 	private boolean isAwarded;
 	
 	public Guide(String username, String password, String email, String name, String surname) {
-		super(username, password, email, name, surname, UserType.RegisteredUser);
+		super(username, password, email, name, surname, UserType.Guide);
 		this.tours = new ArrayList<>();
 		this.rewardPoints = 0;
 		this.penaltyPoints = 0;

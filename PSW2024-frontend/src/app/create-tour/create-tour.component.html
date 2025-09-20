@@ -1,0 +1,45 @@
+<html>
+	<header class  = "subpage-header">			
+	</header>
+	<p></p>
+	<form [formGroup]="createTourForm" (ngSubmit)="onSubmit()">
+    <div>
+    	 <label for="name">Tour Name</label>
+     	 <input id="name" formControlName="name" type="text" />	
+     	 <div *ngIf="formControls['name'].invalid && formControls['name'].touched">Name is required.</div>
+    </div>
+    <div>
+   		 <label for="description">Description</label>
+   		 <textarea id="description" formControlName="description"></textarea>
+    	 <div *ngIf="formControls['description'].invalid && formControls['description'].touched">Description is required</div>
+    </div>
+	<div>
+    	 <label for="category">Category</label>
+   		 <select id="category" formControlName="category">
+     	 <option *ngFor="let category of category" [value]="category">{{ category }}</option>
+    	 </select>
+    	 <div *ngIf="formControls['category'].invalid && formControls['category'].touched">Category is required</div>
+    </div>
+	<div>
+    	 <label for="difficulty">Difficulty (1-5)</label>
+    	 <select id="difficulty" formControlName="difficulty">
+         <option *ngFor="let i of [1, 2, 3, 4, 5]" [value]="i">{{ i }}</option>
+    	 </select>
+   		 <div *ngIf="formControls['difficulty'].invalid && formControls['difficulty'].touched">Difficulty is required</div>
+    </div>
+    <div>
+    	 <label for="price">Price</label>
+    	 <input id="price" formControlName="price" type="number" />
+    	 <div *ngIf="formControls['price'].invalid && formControls['price'].touched">Price is required</div>
+  </div>
+  <div>
+   		 <label for="time">Time</label>
+    	 <input id="time" formControlName="time" type="datetime-local" />
+    	 <div *ngIf="formControls['time'].invalid && formControls['time'].touched">Time is required</div>
+  </div>
+    
+    <button type="submit" [disabled]="createTourForm.invalid">Submit</button>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  </form>
+</html>
+

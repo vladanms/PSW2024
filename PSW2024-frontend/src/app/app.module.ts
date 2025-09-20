@@ -22,6 +22,8 @@ import { RegisterComponent } from './register/register.component';
 import { RegisteredHomepageComponent } from './registered-homepage/registered-homepage.component';
 import { AdminHomepageComponent } from './admin-homepage/admin-homepage.component';
 import { GuideHomepageComponent } from './guide-homepage/guide-homepage.component';
+import { AddKeypointsComponent } from './add-keypoints/add-keypoints.component';
+import { CreateTourComponent } from './create-tour/create-tour.component';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,8 @@ import { GuideHomepageComponent } from './guide-homepage/guide-homepage.componen
     RegisteredHomepageComponent,
     AdminHomepageComponent,
     GuideHomepageComponent,
+    AddKeypointsComponent,
+    CreateTourComponent,
   ],
   imports: [
     BrowserModule,
