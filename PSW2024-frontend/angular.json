@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ISA2024-frontend": {
+    "PSW2024-frontend": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -31,11 +31,7 @@
             ],
             "tsConfig": "tsconfig.app.json",
             "assets": [
-			 "src/assets",	
-              {
-                "glob": "**/*",
-                "input": "public"
-              }
+			 "src/assets"	
             ],
             "styles": [
               "@angular/material/prebuilt-themes/azure-blue.css",
@@ -72,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ISA2024-frontend:build:production"
+              "buildTarget": "PSW2024-frontend:build:production"
             },
             "development": {
-              "buildTarget": "ISA2024-frontend:build:development"
+              "buildTarget": "PSW2024-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

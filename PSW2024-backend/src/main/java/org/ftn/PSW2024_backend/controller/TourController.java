@@ -3,6 +3,7 @@ package org.ftn.PSW2024_backend.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
 import org.ftn.PSW2024_backend.model.KeyPoint;
 import org.ftn.PSW2024_backend.model.Tour;
@@ -84,11 +85,11 @@ public class TourController {
     }
     
     @PostMapping("/addKeypoint")
-    public ResponseEntity<Map<String, String>> addKeypoint(@RequestParam Long tourId, @RequestBody KeyPoint keyPoint) {
+    public ResponseEntity<Map<String, String>> addKeypoint(@ModelAttribute KeyPointDTO keyPointDTO) {
         Map<String, String> response = new HashMap<>();
         
         try {
-            tourService.addKeypoint(tourId, keyPoint);
+            tourService.addKeypoint(keyPointDTO);
             response.put("success", "Keypoint added successfully.");
             return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {
