@@ -33,6 +33,9 @@ public class Tour {
 	@Column(name = "description", unique = false, nullable = false)
 	private String description;
 	
+	@Column(name = "category", unique = false, nullable = false)
+	private String category;
+	
 	@Column(name = "difficulty", unique = false, nullable = false)
 	private int difficulty;
 	
@@ -65,10 +68,11 @@ public class Tour {
     @CollectionTable(name = "grades", joinColumns = @JoinColumn(name = "tour_id"))
     private List<Grade> grades; 
 
-	public Tour(String name, String description, int difficulty, int price, String guide, LocalDateTime time) {
+	public Tour(String name, String description, String category, int difficulty, int price, String guide, LocalDateTime time) {
 		super();
 		this.name = name;
 		this.description = description;
+		this.category = category;
 		this.difficulty = difficulty;
 		this.price = price;
 		this.guide = guide;
@@ -174,6 +178,14 @@ public class Tour {
 
 	public void setTime(LocalDateTime time) {
 		this.time = time;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 	
 	

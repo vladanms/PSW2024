@@ -1,10 +1,12 @@
 package org.ftn.PSW2024_backend.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
+import org.ftn.PSW2024_backend.dto.TourDTO;
 import org.ftn.PSW2024_backend.model.KeyPoint;
 import org.ftn.PSW2024_backend.model.Tour;
 import org.ftn.PSW2024_backend.service.TourService;
@@ -12,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -97,6 +101,28 @@ public class TourController {
             response.put("error", "An error ooccurred while processing your request.");
             return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+    
+    @GetMapping("/getDrafts/{guide}")
+    public ResponseEntity<List<TourDTO>> getDraftsByGuide(@PathVariable String guide) {
+        try {
+            return new ResponseEntity<>(tourService.getDraftsByGuide(guide), HttpStatus.OK); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteTour(@PathVariable Long id) {
+            return ResponseEntity.ok("OK");
+    }
+    
+    @PostMapping("/publish/{id}")
+    public ResponseEntity<String> publishTour(@PathVariable Long id) {
+
+            return ResponseEntity.ok("OK");
+
     }
 }
 

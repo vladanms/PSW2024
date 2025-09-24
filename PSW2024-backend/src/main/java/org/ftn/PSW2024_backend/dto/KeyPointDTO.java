@@ -4,33 +4,33 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class KeyPointDTO {
 	
-	private Long tourId;
+	private String tourId;
 	private String name;
 	private String description;
 	private MultipartFile image;
-	private float longitude;
-	private float latitude;
+	private String longitude;
+	private String latitude;
     
     
     
-	public KeyPointDTO(Long tourId, String name, String description, MultipartFile image, float longitude, float latitude) {
+	public KeyPointDTO(String tourId, String name, String description, MultipartFile image, String longitude, String latitude) {
 		this.tourId = tourId;
 		this.name = name;
 		this.description = description;
 		this.image = image;
 		this.longitude = longitude;
-		this.latitude = latitude;
+		this.latitude = longitude;
 	}
 
 
 
-	public Long getTourId() {
+	public String getTourId() {
 		return tourId;
 	}
 
 
 
-	public void setTourId(Long postId) {
+	public void setTourId(String postId) {
 		this.tourId = postId;
 	}
 
@@ -72,25 +72,25 @@ public class KeyPointDTO {
 
 
 
-	public float getLongitude() {
+	public String getLongitude() {
 		return longitude;
 	}
 
 
 
-	public void setLongitude(float longitude) {
+	public void setLongitude(String longitude) {
 		this.longitude = longitude;
 	}
 
 
 
-	public float getLatitude() {
+	public String getLatitude() {
 		return latitude;
 	}
 
 
 
-	public void setLatitude(float latitude) {
+	public void setLatitude(String latitude) {
 		this.latitude = latitude;
 	}
 

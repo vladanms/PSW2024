@@ -24,6 +24,7 @@ import { AdminHomepageComponent } from './admin-homepage/admin-homepage.componen
 import { GuideHomepageComponent } from './guide-homepage/guide-homepage.component';
 import { AddKeypointsComponent } from './add-keypoints/add-keypoints.component';
 import { CreateTourComponent } from './create-tour/create-tour.component';
+import { GuideDraftsComponent } from './guide-drafts/guide-drafts.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { CreateTourComponent } from './create-tour/create-tour.component';
     GuideHomepageComponent,
     AddKeypointsComponent,
     CreateTourComponent,
+    GuideDraftsComponent,
   ],
   imports: [
     BrowserModule,

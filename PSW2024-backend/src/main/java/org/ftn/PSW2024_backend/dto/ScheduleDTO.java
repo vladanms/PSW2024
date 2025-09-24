@@ -10,6 +10,8 @@ public class ScheduleDTO {
 	
 	private String description;
 	
+	private String category;
+	
 	private int difficulty;
 	
 	private int price;
@@ -19,11 +21,12 @@ public class ScheduleDTO {
 	
     private String guideName;
 
-	public ScheduleDTO(String name, String description, int difficulty, int price, LocalDateTime time,
+	public ScheduleDTO(String name, String description, String category, int difficulty, int price, LocalDateTime time,
 			String guideName) {
 		super();
 		this.name = name;
 		this.description = description;
+		this.category = category;
 		this.difficulty = difficulty;
 		this.price = price;
 		this.time = time;
@@ -77,6 +80,16 @@ public class ScheduleDTO {
 	public void setGuideName(String guideName) {
 		this.guideName = guideName;
 	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+	
+	
     
     
 

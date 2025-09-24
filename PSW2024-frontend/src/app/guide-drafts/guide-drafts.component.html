@@ -1,0 +1,24 @@
+<div *ngFor="let tour of tours" class="tour-box">
+  <div>
+  <label><strong>{{ tour.name }}</strong></label>/
+  <p>Category: {{ tour.category }}</p>
+  <p>Description: {{ tour.description }}</p>
+  <p>Difficulty: {{ tour.difficulty }}</p>
+  <p>Price: {{ tour.price }}</p>
+  </div>
+  <div [id]="'map-' + tour.id" style="height: 400px; width: 600px"></div>
+
+  <div class="keypoint-info" *ngIf="selectedKeyPoint">
+    <label><strong>>{{ selectedKeyPoint.name }}</strong></label>
+    <p>{{ selectedKeyPoint.description }}</p>
+    <img *ngIf="selectedKeyPoint.imagePath" 
+         [src]="selectedKeyPoint.imagePath" 
+         alt="Keypoint image"
+         class="keypoint-image">
+  </div>
+  <div>
+  <button (click)="addKeypoint(tour)">Add keypoint</button>
+  <button (click)="publishTour(tour)" [disabled]="tour.keyPoints.length < 2">Publish</button>
+  <button (click)="deleteTour(tour)">Delete</button>
+  </div>
+</div>

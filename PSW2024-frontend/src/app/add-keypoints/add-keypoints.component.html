@@ -1,17 +1,17 @@
 <html>
 <form [formGroup]="addKeypointForm" (ngSubmit)="onSubmit()">
 	<div>
-      <label for="name">Keypoint name:</label>
+      <label for="name"><strong>Keypoint name:</strong></label>
       <input id="name" formControlName="name" type="text" />
       <div *ngIf="formControls['name'].invalid && formControls['name'].touched">Name is required.</div>
     </div>
     <div>
-      <label for="content">Description:</label>
+      <label for="content"><strong>Description:</strong></label>
       <input id="content" formControlName="description" type="text" />
       <div *ngIf="formControls['description'].invalid && formControls['description'].touched">Description is required.</div>
     </div>
     <div>
-      <label for="image">Image</label>
+      <label for="image"><strong>Image</strong></label>
       <input id="image" (change)="onFileSelected($event)" type="file" />
       <div *ngIf="formControls['image'].invalid && formControls['image'].touched">Image is required.</div>
     </div>
@@ -19,11 +19,11 @@
     </div>
      	  <div id="map" style="height: 400px; width: 600px"></div>
     <div>
-      <label for="latitude">Latitude:</label>
+      <label for="latitude"><strong>Latitude:</strong></label>
       <label>{{ addKeypointForm.get('latitude')?.value }}</label>
     </div>
     <div>
-      <label for="longitude">Longitude:</label>
+      <label for="longitude"><strong>Longitude:</strong></label>
       <label>{{ addKeypointForm.get('longitude')?.value }}</label>
     </div>
     <button type="submit" [disabled]="addKeypointForm.invalid">Submit</button>

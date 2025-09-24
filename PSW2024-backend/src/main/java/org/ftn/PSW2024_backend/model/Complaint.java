@@ -29,13 +29,10 @@ public class Complaint {
     @JoinColumn(name = "tour_id", nullable = false, unique = false)
     private Tour tour; 
    
-    
-    @ManyToOne
-    @JoinColumn(name = "name", nullable = false, unique = false)
+    @Column(name = "name", nullable = false, unique = false)
     private String name; 
-    
-    @ManyToOne
-    @JoinColumn(name = "description", nullable = false, unique = false)
+   
+    @Column(name = "description", nullable = false, unique = false)
     private String description; 
     
     

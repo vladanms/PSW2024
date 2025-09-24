@@ -13,4 +13,7 @@ public interface TourRepository extends JpaRepository<Tour, Long>{
 	List<Tour> FindAll();
 	Tour FindById(Long id);
 	List<Tour> findByGuide(String guide);
+	List<Tour> findByGuideAndIsPublishedFalse(String guide);
+	List<Tour> findByGuideAndIsPublishedTrue(String guide);
+	List<Tour> findByCategory(String category);
 }

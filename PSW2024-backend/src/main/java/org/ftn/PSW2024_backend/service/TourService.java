@@ -10,8 +10,12 @@ import java.util.List;
 
 import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
+import org.ftn.PSW2024_backend.model.Complaint;
+import org.ftn.PSW2024_backend.model.Grade;
 import org.ftn.PSW2024_backend.model.KeyPoint;
 import org.ftn.PSW2024_backend.model.Tour;
+import org.ftn.PSW2024_backend.model.Tourist;
+import org.ftn.PSW2024_backend.dto.TourDTO;
 import org.ftn.PSW2024_backend.repository.TourRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +38,7 @@ public class TourService {
 		 Tour tour = new Tour(
 		            scheduleDTO.getName(),
 		            scheduleDTO.getDescription(),
+		            scheduleDTO.getCategory(),
 		            scheduleDTO.getDifficulty(),
 		            scheduleDTO.getPrice(),
 		            scheduleDTO.getGuideName(),
@@ -67,7 +72,7 @@ public class TourService {
 	
 	public String addKeypoint(KeyPointDTO keyPointDTO) throws IOException
 	{
-		Tour tour = tours.FindById(keyPointDTO.getTourId());
+		Tour tour = tours.FindById(Long.parseLong(keyPointDTO.getTourId()));
 		MultipartFile image = keyPointDTO.getImage();
 		String imageName = tour.getId() + "-" + tour.getKeyPoints().size();
 		
@@ -79,7 +84,8 @@ public class TourService {
 		Files.copy(image.getInputStream(), Paths.get(imageDirectory, imageName + format), StandardCopyOption.REPLACE_EXISTING);
 		String imagePath = (Paths.get(imageDirectory, imageName + format)).toString();
 		
-		KeyPoint keypoint = new KeyPoint(keyPointDTO.getName(), keyPointDTO.getDescription(), imagePath, keyPointDTO.getLongitude(), keyPointDTO.getLatitude());
+		KeyPoint keypoint = new KeyPoint(keyPointDTO.getName(), keyPointDTO.getDescription(), imagePath, Float.parseFloat(keyPointDTO.getLongitude()), 
+				Float.parseFloat(keyPointDTO.getLatitude()));
 		
 		List<KeyPoint> keypoints = tour.getKeyPoints();
 		keypoints.add(keypoint);
@@ -92,5 +98,47 @@ public class TourService {
 	public ArrayList<Tour> getToursByGuide(String guide)
 	{
 		return (ArrayList<Tour>) tours.findByGuide(guide);
+	}
+	
+	public List<TourDTO> getDraftsByGuide(String guide)
+	{
+		List<TourDTO> drafts = new ArrayList<TourDTO>();
+		
+		for( Tour tour : ((ArrayList<Tour>) tours.findByGuideAndIsPublishedFalse(guide)))
+		{
+			List<String> touristNames = new ArrayList<String>();
+			for(Tourist t : tour.getTourists())
+			{
+				touristNames.add(t.getUsername());
+			}
+			
+			TourDTO dto = new TourDTO(
+					tour.getId(),
+					tour.getName(),
+					tour.getDescription(),
+					tour.getCategory(),
+					tour.getDifficulty(),
+					tour.getPrice(),
+					tour.getTime(),
+					tour.getGuide(),
+					touristNames,
+				    tour.getKeyPoints(),
+				    tour.getComplaints(),
+				    tour.isPublished(),
+				    tour.getGrades()
+			);
+			drafts.add(dto);
+		}
+		return drafts;
+	}
+	
+	public ArrayList<Tour> getPublishedByGuide(String guide)
+	{
+		return (ArrayList<Tour>) tours.findByGuideAndIsPublishedTrue(guide);
+	}
+	
+	public ArrayList<Tour> getPublishedByCategory(String category)
+	{
+		return (ArrayList<Tour>) tours.findByCategory(category);
 	}
 }

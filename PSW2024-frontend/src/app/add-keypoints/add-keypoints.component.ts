@@ -83,10 +83,10 @@ export class AddKeypointsComponent {
       		return;
     	}   	
     	const formData = new FormData();
-   	 	const guideId = localStorage.getItem('guideId');
-    	if(guideId)
+   	 	const tourId = localStorage.getItem('tourId');
+    	if(tourId)
    		{
-    		formData.append('guideId', guideId);
+    		formData.append('guideId', tourId);
     	}
     	else
     	{
