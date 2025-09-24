@@ -43,6 +43,25 @@
       <div *ngIf="formControls['confirmPassword'].invalid && formControls['confirmPassword']touched">Confirm Password is required.</div>
     </div>
     <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    
+    <div>
+      <label>Interests</label>
+      <div *ngFor="let interest of interests">
+        <label>
+          <input
+            type="checkbox"
+            [value]="interest"
+            (change)="onInterestSelection($event)"
+            [checked]="registerForm.value.interests.includes(interest)"
+          />
+          {{ interest }}
+        </label>
+      </div>
+      <div *ngIf="formControls['interests'].invalid && formControls['interests'].touched">
+        At least one interest must be selected.
+      </div>
+    </div>
+
 
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
   </form>

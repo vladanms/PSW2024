@@ -5,8 +5,10 @@ public class LoginDTO {
 	private String username;
 	private String password;
 	
+    public LoginDTO(){
+    }
+	
 	public LoginDTO(String username, String password) {
-		super();
 		this.username = username;
 		this.password = password;
 	}

@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, AfterViewInit, } from '@angular/core';
 import { GuideDraftsService } from '../service/guide-drafts.service';
 import { TourDTO } from '../dto/TourDTO';
 import { GradeDTO } from '../dto/GradeDTO';
-import { ComplaintDTO } from '../dto/complaintDTO';
+import { ComplaintDTO } from '../dto/ComplaintDTO';
 import { KeyPointDTO } from '../dto/KeyPointDTO';
 import * as Leaflet from 'leaflet';
 import { Router } from '@angular/router';
@@ -17,20 +17,21 @@ export class GuideDraftsComponent {
   tours: TourDTO[] = [];
   selectedKeyPoint: KeyPointDTO | null = null;
   constructor(private guideDraftsService: GuideDraftsService, private router: Router) {}
+  initializedMapIds = new Set<number>();
 
   ngOnInit(): void 
   {
-    const guide = localStorage.getItem('guide');
+    const guide = localStorage.getItem('loggedUser');
     if (!guide) {
       alert('Guide not found in localStorage');
       return;
    }
 
    this.guideDraftsService.getDrafts(guide).subscribe({
-      next: (tours) => {
-        this.tours = tours;
-        setTimeout(() => {
-          this.tours.forEach(tour => this.initMap(tour));
+     next: (tours) => {
+     	this.tours = tours;
+     	setTimeout(() => {
+          	this.tours.forEach(tour => this.initMap(tour));
         }, 0);
       },
       error: err => console.error('Error loading drafts', err)
@@ -40,10 +41,14 @@ export class GuideDraftsComponent {
   initMap(tour: TourDTO): void 
   {
   	const mapId = `map-${tour.id}`;
-	      
+  	
+  	if (this.initializedMapIds.has(tour.id))
+	{ 
+		return;
+	}
 	if (!tour.keyPoints || tour.keyPoints.length === 0)
-	 {
-    return;
+	{
+    	return;
   	}
   	  	
   	
@@ -85,14 +90,14 @@ export class GuideDraftsComponent {
 		return;
 	}
 
-    this.guideDraftsService.publish(tour.id).subscribe(() => {
+    this.guideDraftsService.publish(tour.id.toString()).subscribe(() => {
         this.refresh();
     });
   }
 
   deleteTour(tour : TourDTO): void 
   {
-  	this.guideDraftsService.delete(tour.id).subscribe(() => {
+  	this.guideDraftsService.delete(tour.id.toString()).subscribe(() => {
     this.refresh();
   	});
   }
@@ -111,6 +116,6 @@ export class GuideDraftsComponent {
   addKeypoint(tour : TourDTO)
   {
 	  localStorage.setItem('tourId', tour.id.toString());
-	  this.router.navigate(['/addKeypoint']);
+	  this.router.navigate(['/addKeypoints']);
   }
 }

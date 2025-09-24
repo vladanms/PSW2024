@@ -9,6 +9,8 @@ public class Grade {
     private String content;   
     private int grade;
     
+    public Grade() {}
+    
 	public Grade(String tourist, String content, int grade) {
 		super();
 		this.tourist = tourist;

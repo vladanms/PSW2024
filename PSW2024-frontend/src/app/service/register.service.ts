@@ -23,6 +23,7 @@ export class RegisterService {
 		email : registerDTO.email,
 		name : registerDTO.name,
 		surname : registerDTO.surname,
+		interests : registerDTO.interests
 		};
 		
 		return this.http.post<any>(`${this.apiHost}user/register`, user, {headers: this.headers, withCredentials: true }).pipe(

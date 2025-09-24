@@ -34,8 +34,8 @@ public class TourDTO {
 	    private boolean isPublished;
 	    private List<Grade> grades;
 	    
-	    
-	    
+	    public TourDTO() {}
+	    	    
 		public TourDTO(Long id, String name, String description, String category, int difficulty, int price,
 				LocalDateTime time, String guide, List<String> tourists, List<KeyPoint> keyPoints,
 				List<Complaint> complaints, boolean isPublished, List<Grade> grades) {

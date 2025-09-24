@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,51 +25,51 @@ public class Tour {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", unique = true, nullable = false)
     private Long id;
-    
-	@Column(name = "name", unique = false, nullable = false)
-	private String name;
-	
-	@Column(name = "description", unique = false, nullable = false)
-	private String description;
-	
-	@Column(name = "category", unique = false, nullable = false)
-	private String category;
-	
-	@Column(name = "difficulty", unique = false, nullable = false)
-	private int difficulty;
-	
-	@Column(name = "price", unique = false, nullable = false)
-	private int price;
-	
-	@Column(name = "time", unique = false, nullable = false)
-	private LocalDateTime time;
-	
-    @Column(name = "guide_id", nullable = false)
-    private String guide;
-    
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private String description;
+
+    @Column(nullable = false)
+    private String category;
+
+    @Column(nullable = false)
+    private int difficulty;
+
+    @Column(nullable = false)
+    private int price;
+
+    @Column(nullable = false)
+    private LocalDateTime time;
+
+    @ManyToOne
+    @JoinColumn(name = "guide_id", nullable = false)
+    private Guide guide;
+
     @ManyToMany
-    @JoinTable(name = "users", 
-    		   joinColumns = @JoinColumn(name = "tour_id"),
-        inverseJoinColumns = @JoinColumn(name = "user_id"))
-    private List<Tourist> tourists;
-    
+    @JoinTable( name = "tourists",joinColumns = @JoinColumn(name = "tour_id"),inverseJoinColumns = @JoinColumn(name = "tourist_id") )
+    private List<Tourist> tourists = new ArrayList<>();
+
     @ElementCollection
     @CollectionTable(name = "keyPoints", joinColumns = @JoinColumn(name = "tour_id"))
-    private List<KeyPoint> keyPoints;
-    
+    private List<KeyPoint> keyPoints = new ArrayList<>();
+
     @OneToMany(mappedBy = "tour", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Complaint> complaints;
-    
-    @Column(name = "published", unique = false, nullable = false)
+    private List<Complaint> complaints = new ArrayList<>();
+
+    @Column(nullable = false)
     private boolean isPublished;
-    
+
     @ElementCollection
     @CollectionTable(name = "grades", joinColumns = @JoinColumn(name = "tour_id"))
-    private List<Grade> grades; 
+    private List<Grade> grades = new ArrayList<>();
 
-	public Tour(String name, String description, String category, int difficulty, int price, String guide, LocalDateTime time) {
+    public Tour() {}
+    
+	public Tour(String name, String description, String category, int difficulty, int price, Guide guide, LocalDateTime time) {
 		super();
 		this.name = name;
 		this.description = description;
@@ -124,11 +125,11 @@ public class Tour {
 		this.price = price;
 	}
 
-	public String getGuide() {
+	public User getGuide() {
 		return guide;
 	}
 
-	public void setGuide(String guide) {
+	public void setGuide(Guide guide) {
 		this.guide = guide;
 	}
 

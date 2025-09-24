@@ -12,8 +12,9 @@ import { RegisterDTO } from '../dto/registerDTO';
 })
 export class RegisterComponent {
 
-registerForm: FormGroup;
+  registerForm: FormGroup;
   errorMessage: string = '';
+  interests: string[] = ['Nature', 'Art', 'Sports', 'Shopping', 'Food'];
 
   constructor(
     private fb: FormBuilder,
@@ -27,6 +28,7 @@ registerForm: FormGroup;
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
       confirmPassword: ['', [Validators.required]],
+      interests: [[], [Validators.required]]
     });
   }
 
@@ -34,16 +36,36 @@ registerForm: FormGroup;
     return this.registerForm.controls;
   }
   
+   onInterestSelection(event: any) {
+    const selectedInterest = event.target.value;
+    let interests = this.registerForm.value.interests;
+    
+	 
+      if (event.target.checked) 
+      {
+      	interests.push(selectedInterest);
+      }
+      else
+      {
+      const index = interests.indexOf(selectedInterest);
+      	if (index > -1) {
+        	interests.splice(index, 1);
+      	}
+      }
+      this.registerForm.patchValue({ interests: interests });
+    }
   
 
   onSubmit() {
-    if (this.registerForm.invalid) {
+    if (this.registerForm.invalid) 
+    {
       return;
     }
 
     const user: RegisterDTO = this.registerForm.value;
 
-    if (user.password !== user.confirmPassword) {
+    if (user.password !== user.confirmPassword) 
+    {
       this.errorMessage = 'Passwords do not match';
       return;
     }

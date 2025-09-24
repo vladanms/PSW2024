@@ -12,9 +12,10 @@
     <label><strong>>{{ selectedKeyPoint.name }}</strong></label>
     <p>{{ selectedKeyPoint.description }}</p>
     <img *ngIf="selectedKeyPoint.imagePath" 
-         [src]="selectedKeyPoint.imagePath" 
+         [src]="'http://localhost:8091/' + selectedKeyPoint.imagePath" 
          alt="Keypoint image"
-         class="keypoint-image">
+         class="keypoint-image"
+         style="height: 200px; width: 300px">
   </div>
   <div>
   <button (click)="addKeypoint(tour)">Add keypoint</button>

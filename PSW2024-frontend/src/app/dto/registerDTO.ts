@@ -5,4 +5,5 @@ export class RegisterDTO {
     email !: string
     name !: string
     surname !: string
+    interests !: string[]
 }

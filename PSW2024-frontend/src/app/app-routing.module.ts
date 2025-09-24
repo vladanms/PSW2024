@@ -6,6 +6,8 @@ import { RegisteredHomepageComponent } from './registered-homepage/registered-ho
 import { AdminHomepageComponent } from './admin-homepage/admin-homepage.component';
 import { GuideHomepageComponent } from './guide-homepage/guide-homepage.component';
 import { AddKeypointsComponent } from './add-keypoints/add-keypoints.component';
+import { CreateTourComponent } from './create-tour/create-tour.component';
+import { GuideDraftsComponent } from './guide-drafts/guide-drafts.component';
 
 const routes: Routes = [
 		{path: 'login', component : LoginComponent},
@@ -14,6 +16,8 @@ const routes: Routes = [
 		{path: 'adminHomepage', component : AdminHomepageComponent},
 		{path: 'guideHomepage', component : GuideHomepageComponent},
 		{path: 'addKeypoints', component : AddKeypointsComponent},
+		{path :'createTour', component : CreateTourComponent},
+		{path :'guideDrafts', component : GuideDraftsComponent}
 ];
 
 @NgModule({

@@ -36,9 +36,6 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-	
 	
 	@PostMapping("/login")
 	public ResponseEntity<Map<String, String>> login(@RequestBody LoginDTO loginDTO, HttpServletRequest request){
@@ -46,8 +43,8 @@ public class UserController {
 		 Map<String, String> response = new HashMap<>();
 		 try {
 	            User user = userService.authenticate(loginDTO);
-	            response.put("username", user.getUsername()); //this will be saved to localStorage on the frontend
-	            response.put("type", user.getType().toString());
+	            response.put("username", user.getUsername());
+	            response.put("type", user.getType());
 	            return ResponseEntity.ok(response);
 	        } catch (BadCredentialsException e) {
 	            response.put("error", e.getMessage());
@@ -66,7 +63,7 @@ public class UserController {
 		Map<String, String> response = new HashMap<>();
 		
 		try {
-			String register = userService.register(userDTO, passwordEncoder);
+			String register = userService.register(userDTO);
 		if(register.equals("usernameError"))
 		{
 			response.put("error", "Username taken. Please select another one.");

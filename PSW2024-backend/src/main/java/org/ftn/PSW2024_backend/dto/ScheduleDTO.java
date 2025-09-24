@@ -20,6 +20,8 @@ public class ScheduleDTO {
 	private LocalDateTime time;
 	
     private String guideName;
+    
+    public ScheduleDTO() {}
 
 	public ScheduleDTO(String name, String description, String category, int difficulty, int price, LocalDateTime time,
 			String guideName) {

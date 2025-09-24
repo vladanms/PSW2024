@@ -11,7 +11,7 @@ public class KeyPointDTO {
 	private String longitude;
 	private String latitude;
     
-    
+    public KeyPointDTO() {}
     
 	public KeyPointDTO(String tourId, String name, String description, MultipartFile image, String longitude, String latitude) {
 		this.tourId = tourId;

@@ -11,7 +11,7 @@ public class KeyPoint {
 	private float longitude;
 	private float latitude;
     
-    
+    public KeyPoint() {}
     
 	public KeyPoint(String name, String description, String imagePath, float longitude, float latitude) {
 		this.name = name;

@@ -15,11 +15,11 @@ export class LoginService {
 
 
 
- 	login(credentials: string, password: string): Observable<any>{
+ 	login(username: string, password: string): Observable<any>{
 		 console.log("started");
 	  let loginDTO =
 	  {
-		  credentials: credentials,
+		  username: username,
 		  password: password
 	  }
 	  

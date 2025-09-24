@@ -39,11 +39,14 @@ public class User {
 	@Column(name = "surname", nullable = false)
 	private String surname;
 	
-    @Enumerated(EnumType.STRING) 
-    @Column(nullable = false)
-    private UserType type;
+    @Column(name = "type",  insertable = false, updatable = false)
+    private String type;
 
-	public User(String username, String password, String email, String name, String surname, UserType type) {
+    public User(){
+    	
+    }
+    
+	public User(String username, String password, String email, String name, String surname, String type) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -101,11 +104,11 @@ public class User {
 		this.surname = surname;
 	}
 
-	public UserType getType() {
+	public String getType() {
 		return type;
 	}
 
-	public void setType(UserType type) {
+	public void setType(String type) {
 		this.type = type;
 	}
 	

@@ -1,4 +1,4 @@
-import { ComplaintDTO } from "./complaintDTO";
+import { ComplaintDTO } from "./ComplaintDTO";
 import { KeyPointDTO } from "./KeyPointDTO";
 import { GradeDTO } from "./GradeDTO";
 

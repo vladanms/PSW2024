@@ -7,6 +7,9 @@ import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service; 
 
 import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
@@ -17,14 +20,22 @@ import org.ftn.PSW2024_backend.model.Tour;
 import org.ftn.PSW2024_backend.model.Tourist;
 import org.ftn.PSW2024_backend.dto.TourDTO;
 import org.ftn.PSW2024_backend.repository.TourRepository;
+import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.multipart.MultipartFile;
 
+import org.ftn.PSW2024_backend.model.Guide;
+import org.ftn.PSW2024_backend.model.User;
+
+@Service
 public class TourService {
 
 	@Autowired
 	private TourRepository tours;
+	
+	@Autowired
+	private UserRepository users;
 	
 	@Value("${image.directory:images}")
 	private String imageDirectory;
@@ -41,15 +52,17 @@ public class TourService {
 		            scheduleDTO.getCategory(),
 		            scheduleDTO.getDifficulty(),
 		            scheduleDTO.getPrice(),
-		            scheduleDTO.getGuideName(),
+		            (Guide) users.findByUsername(scheduleDTO.getGuideName()),
 		            scheduleDTO.getTime()
 		        );
 		 tours.save(tour);
 		return "success";
 	}
 	
-	public String publishTour(Tour tour)
+	public String publishTour(String tourId)
 	{
+		Tour tour = tours.findById(Long.parseLong(tourId)).orElse(null);
+		
 		if(tour.getKeyPoints().size() < 2) {
 			return "keypointError";
 		}
@@ -72,9 +85,9 @@ public class TourService {
 	
 	public String addKeypoint(KeyPointDTO keyPointDTO) throws IOException
 	{
-		Tour tour = tours.FindById(Long.parseLong(keyPointDTO.getTourId()));
+		Tour tour  = tours.findById(Long.parseLong(keyPointDTO.getTourId())).orElse(null);;
 		MultipartFile image = keyPointDTO.getImage();
-		String imageName = tour.getId() + "-" + tour.getKeyPoints().size();
+		String imageName = "img" + tour.getId() + "-" + tour.getKeyPoints().size();
 		
 	    String format = image.getOriginalFilename().substring(image.getOriginalFilename().lastIndexOf("."));
 	    if(!format.equals(".jpg") && !format.equals(".png"))
@@ -104,10 +117,10 @@ public class TourService {
 	{
 		List<TourDTO> drafts = new ArrayList<TourDTO>();
 		
-		for( Tour tour : ((ArrayList<Tour>) tours.findByGuideAndIsPublishedFalse(guide)))
+		for( Tour tour : ((ArrayList<Tour>) tours.findByGuideAndIsPublishedFalse((Guide) users.findByUsername(guide))))
 		{
 			List<String> touristNames = new ArrayList<String>();
-			for(Tourist t : tour.getTourists())
+			for(User t : tour.getTourists())
 			{
 				touristNames.add(t.getUsername());
 			}
@@ -120,7 +133,7 @@ public class TourService {
 					tour.getDifficulty(),
 					tour.getPrice(),
 					tour.getTime(),
-					tour.getGuide(),
+					tour.getGuide().getUsername(),
 					touristNames,
 				    tour.getKeyPoints(),
 				    tour.getComplaints(),
@@ -134,7 +147,7 @@ public class TourService {
 	
 	public ArrayList<Tour> getPublishedByGuide(String guide)
 	{
-		return (ArrayList<Tour>) tours.findByGuideAndIsPublishedTrue(guide);
+		return (ArrayList<Tour>) tours.findByGuideAndIsPublishedTrue((Guide) users.findByUsername(guide));
 	}
 	
 	public ArrayList<Tour> getPublishedByCategory(String category)

@@ -14,6 +14,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User.UserBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service; 
 
 
 import java.io.UnsupportedEncodingException;
@@ -27,34 +28,22 @@ import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.ftn.PSW2024_backend.dto.RegisterDTO;
 import org.ftn.PSW2024_backend.dto.LoginDTO;
 
-public class UserService implements UserDetailsService {
+@Service
+public class UserService{
 
 	@Autowired
 	private UserRepository users;
 	
 	@Autowired
+	private PasswordEncoder encoder;
+	
+	@Autowired
 	private AuthenticationManager authenticationManager;
 	
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = users.findByUsername(username);
-        
-        UserBuilder builder = org.springframework.security.core.userdetails.User.withUsername(user.getUsername())
-            .password(user.getPassword());
-
-        
-        if (user.getType().equals(UserType.Tourist)) {
-            builder.roles("TOURIST");
-        } else if (user.getType().equals(UserType.Guide)) {
-            builder.roles("GUIDE");
-        } else if (user.getType().equals(UserType.Admin)) {
-            builder.roles("ADMIN");
-        } else {
-            builder.roles("");
-        }
-
-        return builder.build();
-
+	
+	public String getUserType(String username)
+	{
+		return(users.findByUsername(username).getType());
 	}
 	
 	public User authenticate(LoginDTO loginDTO) {
@@ -66,11 +55,12 @@ public class UserService implements UserDetailsService {
 			        return users.findByUsername(loginDTO.getUsername());
 			 } 
 			 catch (AuthenticationException e) {
+				 System.out.println("LOGIN USER" + users.findByUsername(loginDTO.getUsername()) + " PASSWORD " + users.findByUsername(loginDTO.getPassword()));
 				 throw new BadCredentialsException("Invalid username or password");
 			    } 
 	}
 	
-	public String register(RegisterDTO regDTO, PasswordEncoder encoder) throws MessagingException, UnsupportedEncodingException {
+	public String register(RegisterDTO regDTO) throws MessagingException, UnsupportedEncodingException {
 		User toRegister = users.findByEmail(regDTO.getEmail());
 		if(toRegister != null) {
 			return "emailError";
@@ -80,8 +70,14 @@ public class UserService implements UserDetailsService {
 			return "usernameError";
 		}
 		
-	    Tourist newUser = new Tourist(regDTO.getUsername(), regDTO.getPassword(), regDTO.getEmail(),
-	    		regDTO.getName(), regDTO.getSurname(), regDTO.getInterests());
+		List<UserInterests> interests = new ArrayList<UserInterests>();
+		for(String interest : regDTO.getInterests())
+		{
+			interests.add(UserInterests.valueOf(interest));
+		}
+		
+	    Tourist newUser = new Tourist(regDTO.getUsername(), encoder.encode(regDTO.getPassword()), regDTO.getEmail(),
+	    		regDTO.getName(), regDTO.getSurname(), interests);
 		
 		users.save(newUser);
 		return "success";

@@ -26,12 +26,12 @@ export class LoginComponent implements OnInit {
 	  	 this.loginService.login(this.username, this.password).subscribe(
       (response) => {
 		  console.log(response);
-        if (localStorage.getItem('userType') === 'Admin') {
+        if (localStorage.getItem('loggedType') === 'Admin') {
             this.router.navigate(['/adminHomepage']);
-          } else if (localStorage.getItem('userType') === 'Guide') {
+          } else if (localStorage.getItem('loggedType') === 'Guide') {
             this.router.navigate(['/guideHomepage']);
           } else {
-            this.router.navigate(['/registeresHomepage']);
+            this.router.navigate(['/registeredHomepage']);
           }
       },
       (error) => {

@@ -5,15 +5,17 @@ import org.springframework.stereotype.Repository;
 
 
 import java.util.List;
+import java.util.Optional;
 
+import org.ftn.PSW2024_backend.model.User;
 import org.ftn.PSW2024_backend.model.Tour;
 
 public interface TourRepository extends JpaRepository<Tour, Long>{
 
-	List<Tour> FindAll();
-	Tour FindById(Long id);
+	List<Tour> findAll();
+	Optional<Tour> findById(Long id);
 	List<Tour> findByGuide(String guide);
-	List<Tour> findByGuideAndIsPublishedFalse(String guide);
-	List<Tour> findByGuideAndIsPublishedTrue(String guide);
+	List<Tour> findByGuideAndIsPublishedFalse(User guide);
+	List<Tour> findByGuideAndIsPublishedTrue(User guide);
 	List<Tour> findByCategory(String category);
 }

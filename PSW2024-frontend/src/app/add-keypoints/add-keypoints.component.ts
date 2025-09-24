@@ -86,7 +86,7 @@ export class AddKeypointsComponent {
    	 	const tourId = localStorage.getItem('tourId');
     	if(tourId)
    		{
-    		formData.append('guideId', tourId);
+    		formData.append('tourId', tourId);
     	}
     	else
     	{

@@ -15,23 +15,27 @@ import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 
 @Entity
-@DiscriminatorValue("registeredUser")
+@DiscriminatorValue("Tourist")
 public class Tourist extends User{
 
-	@Column(unique = false, nullable = false)
+	@Column(unique = false)
 	private int rewardPoints;
 	
-	@Column(unique = false, nullable = false)
+	@Column(unique = false)
 	private int penaltyPoints;
 	
-	@Column(unique = false, nullable = false)
+	@Column(unique = false)
 	private boolean isMalicious;
 	
-	@Column(unique = false, nullable = false)
+	@Column(unique = false)
 	private boolean isBanned;
 	
-    @ManyToMany(targetEntity = Tour.class, mappedBy = "tourists")
-    private List<Tour> tours;
+	@ManyToMany(mappedBy = "tourists")
+	private List<Tour> tours = new ArrayList<>();
+
+ 
+	 @Column(insertable = false, updatable = false)
+	 private UserType type;
 	
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "interests", joinColumns = @JoinColumn(name = "user_id"))
@@ -40,7 +44,7 @@ public class Tourist extends User{
     private List<UserInterests> interests;
 
 	public Tourist(String username, String password, String email, String name, String surname, List<UserInterests> interests) {
-		super(username, password, email, name, surname, UserType.Tourist);
+		super(username, password, email, name, surname, "Tourist");
 		this.rewardPoints = 0;
 		this.penaltyPoints = 0;
 		this.isMalicious = false;

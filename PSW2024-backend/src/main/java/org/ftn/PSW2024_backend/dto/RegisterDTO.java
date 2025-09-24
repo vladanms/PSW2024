@@ -10,12 +10,12 @@ public class RegisterDTO {
 	private String email;
 	private String name;
 	private String surname;
-	private List <UserInterests> interests;
+	private List <String> interests;
 	
-	
+	public RegisterDTO() {}
 	
 	public RegisterDTO(String username, String password, String email, String name, String surname,
-			List<UserInterests> interests) {
+			List<String> interests) {
 		super();
 		this.username = username;
 		this.password = password;
@@ -65,11 +65,11 @@ public class RegisterDTO {
 		this.surname = surname;
 	}
 
-	public List<UserInterests> getInterests() {
+	public List<String> getInterests() {
 		return interests;
 	}
 
-	public void setInterests(List<UserInterests> interests) {
+	public void setInterests(List<String> interests) {
 		this.interests = interests;
 	}
 	

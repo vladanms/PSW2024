@@ -14,6 +14,4 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	List <User> findAll();
 	User findByEmail(String email);
 	User findByUsername(String username);
-	List<User> findAllByLastActiveBefore(LocalDateTime date);
-
 }

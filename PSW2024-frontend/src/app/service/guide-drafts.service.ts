@@ -15,14 +15,14 @@ export class GuideDraftsService {
   
   
     getDrafts(guide : String): Observable<TourDTO[]> {
-    return this.http.get<TourDTO[]>(`${this.apiHost}post/getDrafts/${guide}'`, {withCredentials: true});
+    return this.http.get<TourDTO[]>(`${this.apiHost}tour/getDrafts/${guide}`, {withCredentials: true});
   	}
   
-  	publish(id : String): Observable<any>{
-	return this.http.get<TourDTO[]>(`${this.apiHost}post/publishTour/${id}`, {withCredentials: true});
+  	publish(tourId : String): Observable<any>{
+	return this.http.post<TourDTO[]>(`${this.apiHost}tour/publishTour/${tourId}`, null, {withCredentials: true });
 	}
 	
-	delete(id : String): Observable<TourDTO[]>{
-	return this.http.get<TourDTO[]>(`${this.apiHost}post/deleteTour/${id}`, {withCredentials: true});	
+	delete(tourId : String): Observable<TourDTO[]>{
+	return this.http.delete<TourDTO[]>(`${this.apiHost}tour/deleteTour/${tourId}`, {withCredentials: true});	
 	}
 }
