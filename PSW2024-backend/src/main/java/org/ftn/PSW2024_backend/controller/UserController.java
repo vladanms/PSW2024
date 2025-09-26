@@ -9,6 +9,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -82,5 +84,15 @@ public class UserController {
 		        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		    }
 	}
+	
+	 @GetMapping("/getRewardPoints/{tourist}")
+	 public ResponseEntity<Integer> getAvailable(@PathVariable String tourist) {
+	     try {
+	            return new ResponseEntity<>(userService.getRewardPoints(tourist), HttpStatus.OK); 
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	 }
 	
 }

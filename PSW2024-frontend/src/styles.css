@@ -1,0 +1,22 @@
+.tour-box{
+  background-color: rgb(192, 192, 192);
+  color: black;
+  padding: 16px 30px;
+  width: 100%;
+  height: auto;
+  border: 2px solid rgb(128, 0, 0);
+}
+
+.keypoint-info{
+  padding: 15px 15px;
+  background-color: rgb(0, 0, 0);
+  color: #EAEAEA;
+}
+
+.keypoint-image {
+  display: block;          
+  margin: 0 auto 10px auto; 
+  max-width: 100%;
+  height: auto;
+  border: 1px solid black;
+}

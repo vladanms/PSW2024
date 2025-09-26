@@ -25,6 +25,9 @@ import { GuideHomepageComponent } from './guide-homepage/guide-homepage.componen
 import { AddKeypointsComponent } from './add-keypoints/add-keypoints.component';
 import { CreateTourComponent } from './create-tour/create-tour.component';
 import { GuideDraftsComponent } from './guide-drafts/guide-drafts.component';
+import { TouristToursComponent } from './tourist-tours/tourist-tours.component';
+import { GuideToursComponent } from './guide-tours/guide-tours.component';
+import { TouristCheckoutComponent } from './tourist-checkout/tourist-checkout.component';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,9 @@ import { GuideDraftsComponent } from './guide-drafts/guide-drafts.component';
     AddKeypointsComponent,
     CreateTourComponent,
     GuideDraftsComponent,
+    TouristToursComponent,
+    GuideToursComponent,
+    TouristCheckoutComponent,
   ],
   imports: [
     BrowserModule,

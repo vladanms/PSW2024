@@ -83,5 +83,10 @@ public class UserService{
 		return "success";
 	}
 	
+	public int getRewardPoints(String username)
+	{
+		Tourist tourist = (Tourist) users.findByUsername(username);
+		return tourist.getRewardPoints();
+	}
 
 }

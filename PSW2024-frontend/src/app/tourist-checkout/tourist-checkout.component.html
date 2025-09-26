@@ -1,0 +1,28 @@
+<div>
+  <h2>Cart:</h2>
+  <div *ngFor="let tour of tours">
+    <div>
+      <span>{{ tour.name }}</span> - 
+      <span>{{ tour.price | currency }}</span>
+      <button (click)="removeFromCart(tour)">Remove</button>
+    </div>
+  </div>
+
+  <div class>
+    <label>
+      Use Reward Points
+      <input type="checkbox" [(ngModel)]="useRewardPoints" (change)="toggleRewardPoints($event)">
+    </label>
+  </div>
+
+  <div>
+    <h3>Total Price: 
+      <span>{{ finalPrice }}</span>
+      <span *ngIf="useRewardPoints"> - 
+        <span>{{ rewardPoints }}</span>         
+      </span>
+ 	</h3>
+</div>
+
+  <button (click)="checkout()">Purchase</button>
+</div>

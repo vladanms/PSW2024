@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, } from '@angular/core';
+import { Component } from '@angular/core';
 import { GuideDraftsService } from '../service/guide-drafts.service';
 import { TourDTO } from '../dto/TourDTO';
 import { GradeDTO } from '../dto/GradeDTO';

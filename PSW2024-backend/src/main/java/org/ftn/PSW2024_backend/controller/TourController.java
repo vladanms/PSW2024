@@ -74,12 +74,12 @@ public class TourController {
     }
     
 
-    @DeleteMapping("/cancelTour")
-    public ResponseEntity<Map<String, String>> cancelTour(@RequestBody Tour tour) {
+    @DeleteMapping("/cancelTour/{guideName}/{tourId}")
+    public ResponseEntity<Map<String, String>> cancelTour(@PathVariable String guideName, @PathVariable String tourId) {
         Map<String, String> response = new HashMap<>();
         
         try {
-            String result = tourService.cancelTour(tour);
+            String result = tourService.cancelTour(guideName, tourId);
             if (result.equals("timeError")) {
                 response.put("error", "You can't cancel tours that are due in less than 24 hours.");
                 return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
@@ -119,9 +119,33 @@ public class TourController {
         }
     }
     
+    @GetMapping("/getAvailable/{tourist}")
+    public ResponseEntity<List<TourDTO>> getAvailable(@PathVariable String tourist) {
+        try {
+            return new ResponseEntity<>(tourService.getAvailableTours(tourist), HttpStatus.OK); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @DeleteMapping("/delete/{tourId}")
     public ResponseEntity<String> deleteTour(@PathVariable Long id) {
             return ResponseEntity.ok("OK");
+    }
+    
+    @PostMapping("/purchaseTours/{touristName}/{usePoints}")
+    public ResponseEntity<Map <String, String>> reserveTours(@PathVariable String touristName, @PathVariable boolean usePoints, @RequestBody String[] tourIds) {
+    	Map<String, String> response = new HashMap<>();
+        try {
+            String result = tourService.purchaseTours(tourIds, touristName, usePoints);
+        	response.put("success", "Tours purchased");
+        	return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+        	 e.printStackTrace();
+		     response.put("error", "An error occurred while processing your request.");
+		     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

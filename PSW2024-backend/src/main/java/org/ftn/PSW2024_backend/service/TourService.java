@@ -23,6 +23,7 @@ import org.ftn.PSW2024_backend.repository.TourRepository;
 import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.ftn.PSW2024_backend.model.Guide;
@@ -39,7 +40,12 @@ public class TourService {
 	
 	@Value("${image.directory:images}")
 	private String imageDirectory;
-	
+	public ArrayList<Tour> getToursByGuide(String guide)
+	{
+		return (ArrayList<Tour>) tours.findByGuide(guide);
+	}
+
+//GUIDE FUNCTIONS===========================================================================		
 	public String scheduleTour(ScheduleDTO scheduleDTO)
 	{
 		if (scheduleDTO.getTime().isBefore(LocalDateTime.now().plusHours(48))) {
@@ -73,19 +79,9 @@ public class TourService {
 	}
 	
 	
-	public String cancelTour(Tour tour)
-	{
-		if (tour.getTime().isBefore(LocalDateTime.now().plusHours(24))) {
-            return "timeError";
-        }
-		
-		tours.delete(tour);
-		return "success";
-	}
-	
 	public String addKeypoint(KeyPointDTO keyPointDTO) throws IOException
 	{
-		Tour tour  = tours.findById(Long.parseLong(keyPointDTO.getTourId())).orElse(null);;
+		Tour tour  = tours.findById(Long.parseLong(keyPointDTO.getTourId())).orElse(null);
 		MultipartFile image = keyPointDTO.getImage();
 		String imageName = "img" + tour.getId() + "-" + tour.getKeyPoints().size();
 		
@@ -108,10 +104,8 @@ public class TourService {
 		return("success");
 	}
 	
-	public ArrayList<Tour> getToursByGuide(String guide)
-	{
-		return (ArrayList<Tour>) tours.findByGuide(guide);
-	}
+	
+	
 	
 	public List<TourDTO> getDraftsByGuide(String guide)
 	{
@@ -145,6 +139,132 @@ public class TourService {
 		return drafts;
 	}
 	
+	public String cancelTour(String guideName, String tourId)
+	{
+		Tour tour = tours.findById(Long.parseLong(tourId)).orElse(null);
+
+		if(!tour.getGuide().getName().equals(guideName))
+		{
+			return "forbidden";
+		}
+		
+		Guide guide = (Guide) users.findByUsername(guideName);
+		
+		if(!tour.isPublished())
+		{
+			tours.delete(tour);
+			return "success";
+		}
+		
+		if(tour.getTime().isBefore(LocalDateTime.now().plusHours(24)))	
+		{
+			return "timeError";
+		}
+		
+		
+		for(Tourist tourist : tour.getTourists())
+		{
+			int rewardPoints = tourist.getRewardPoints() + tour.getPrice();
+			tourist.setRewardPoints(rewardPoints);
+			users.save(tourist);
+		}
+		
+		tours.delete(tour);
+		int penaltyPoints = guide.getPenaltyPoints()+1;
+		guide.setPenaltyPoints(penaltyPoints);
+		if(penaltyPoints > 9)
+		{
+			guide.setMalicious(true);
+		}
+		
+		users.save(guide);	
+		return "success";
+	}
+//GUIDE FUNCTIONS===========================================================================
+	
+//TOURIST FUNCTIONS=========================================================================
+	
+	public String purchaseTours(String[] tourIds, String touristName, boolean usePoints)
+	{
+		Tourist tourist = (Tourist) users.findByUsername(touristName);
+		int price = 0;
+		List<Tour> tourList = tourist.getTours();
+		
+		for(String id : tourIds)
+		{
+			Tour tour = tours.findById(Long.parseLong(id)).orElse(null);
+			price = price + tour.getPrice();
+			
+			List<Tourist> touristList = tour.getTourists();
+			touristList.add(tourist);			
+			
+			tourList.add(tour);
+			tour.setTourists(touristList);
+			
+			users.save(tourist);
+			tours.save(tour);
+		}
+	
+		if(usePoints)
+		{
+			int rewardPoints = tourist.getRewardPoints(); 
+			rewardPoints = rewardPoints-price;
+			if(rewardPoints < 0)
+			{
+				rewardPoints = 0;
+			}
+			tourist.setRewardPoints(rewardPoints);
+			users.save(tourist);
+		}
+		
+		return "success";
+	}
+
+	public List<TourDTO> getAvailableTours(String touristName)
+	{
+	Tourist tourist = (Tourist) users.findByUsername(touristName);
+	
+		List<TourDTO> availableTours = new ArrayList<TourDTO>();
+		
+		List<Tour> tourList = tours.findAll();
+		for(Tour t : tourList)
+		{
+			if(t.getTourists().contains(tourist))
+			{
+				tourList.remove(t);
+			}
+		}	
+		
+		for( Tour tour : tourList)
+		{
+			List<String> touristNames = new ArrayList<String>();
+			for(User t : tour.getTourists())
+			{
+				touristNames.add(t.getUsername());
+			}
+			
+			TourDTO dto = new TourDTO(
+					tour.getId(),
+					tour.getName(),
+					tour.getDescription(),
+					tour.getCategory(),
+					tour.getDifficulty(),
+					tour.getPrice(),
+					tour.getTime(),
+					tour.getGuide().getUsername(),
+					touristNames,
+				    tour.getKeyPoints(),
+				    tour.getComplaints(),
+				    tour.isPublished(),
+				    tour.getGrades()
+			);
+			availableTours.add(dto);
+		}
+		return availableTours;
+	}
+//TOURIST FUNCTIONS=========================================================================
+
+//QUERIES===================================================================================	
 	public ArrayList<Tour> getPublishedByGuide(String guide)
 	{
 		return (ArrayList<Tour>) tours.findByGuideAndIsPublishedTrue((Guide) users.findByUsername(guide));
@@ -154,4 +274,5 @@ public class TourService {
 	{
 		return (ArrayList<Tour>) tours.findByCategory(category);
 	}
+//QUERIES===================================================================================	
 }
