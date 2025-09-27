@@ -28,6 +28,10 @@ import { GuideDraftsComponent } from './guide-drafts/guide-drafts.component';
 import { TouristToursComponent } from './tourist-tours/tourist-tours.component';
 import { GuideToursComponent } from './guide-tours/guide-tours.component';
 import { TouristCheckoutComponent } from './tourist-checkout/tourist-checkout.component';
+import { TouristGradeComponent } from './tourist-grade/tourist-grade.component';
+import { TouristComplaintComponent } from './tourist-complaint/tourist-complaint.component';
+import { GuideComplaintComponent } from './guide-complaint/guide-complaint.component';
+import { AdminComplaintComponent } from './admin-complaint/admin-complaint.component';
 
 @NgModule({
   declarations: [
@@ -43,6 +47,10 @@ import { TouristCheckoutComponent } from './tourist-checkout/tourist-checkout.co
     TouristToursComponent,
     GuideToursComponent,
     TouristCheckoutComponent,
+    TouristGradeComponent,
+    TouristComplaintComponent,
+    GuideComplaintComponent,
+    AdminComplaintComponent,
   ],
   imports: [
     BrowserModule,

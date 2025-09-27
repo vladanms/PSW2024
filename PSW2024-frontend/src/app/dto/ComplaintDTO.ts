@@ -1,9 +1,9 @@
-export interface ComplaintDTO {
-  id: number;
-  user: { username: string;
-  };
-  tourId?: number;
-  name: string;
-  description: string;
-  status: string;
+export class ComplaintDTO {
+	id !: string;
+    tourist !: string; 
+    guide !: string;
+    tourId !: string; 
+    name !: string; 
+    description !: string;
+    status !: string; 
 }

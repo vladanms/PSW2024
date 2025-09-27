@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Service; 
-
+import org.springframework.stereotype.Service;
+import org.ftn.PSW2024_backend.dto.ComplaintDTO;
+import org.ftn.PSW2024_backend.dto.GradeDTO;
 import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
 import org.ftn.PSW2024_backend.model.Complaint;
@@ -180,6 +181,7 @@ public class TourService {
 		users.save(guide);	
 		return "success";
 	}
+	
 //GUIDE FUNCTIONS===========================================================================
 	
 //TOURIST FUNCTIONS=========================================================================
@@ -216,6 +218,13 @@ public class TourService {
 			tourist.setRewardPoints(rewardPoints);
 			users.save(tourist);
 		}
+		
+		return "success";
+	}
+	
+	public String makeComplaint(ComplaintDTO complaintDTO)
+	{
+		
 		
 		return "success";
 	}
@@ -262,7 +271,134 @@ public class TourService {
 		}
 		return availableTours;
 	}
+	
+	public List<TourDTO> getPurchasedTours(String touristName)
+	{
+	Tourist tourist = (Tourist) users.findByUsername(touristName);
+	
+		List<TourDTO> purschasedTours = new ArrayList<TourDTO>();
+		
+		for( Tour tour : tourist.getTours())
+		{
+			List<String> touristNames = new ArrayList<String>();
+			for(User t : tour.getTourists())
+			{
+				touristNames.add(t.getUsername());
+			}
+			
+			TourDTO dto = new TourDTO(
+					tour.getId(),
+					tour.getName(),
+					tour.getDescription(),
+					tour.getCategory(),
+					tour.getDifficulty(),
+					tour.getPrice(),
+					tour.getTime(),
+					tour.getGuide().getUsername(),
+					touristNames,
+				    tour.getKeyPoints(),
+				    tour.getComplaints(),
+				    tour.isPublished(),
+				    tour.getGrades()
+			);
+			purschasedTours.add(dto);
+		}
+		return purschasedTours;
+	}
+	public String gradeTour(GradeDTO gradeDTO)
+	{
+		Tour tour = tours.findById(Long.parseLong(gradeDTO.getTourId())).orElse(null);
+		if(tour == null)
+		{
+			return "error";
+		}
+		
+		Grade grade = new Grade(gradeDTO.getTourist(), gradeDTO.getContent(), gradeDTO.getGrade());
+		
+		List<Grade> grades = tour.getGrades();
+		grades.add(grade);
+		tour.setGrades(grades);
+		
+		tours.save(tour);
+		return "success";
+	}
 //TOURIST FUNCTIONS=========================================================================
+	
+//GRADES====================================================================================
+	public Float getTourAverageGrade(Tour tour)
+	{
+		Float avgGrade = 0f;
+		
+		for(Grade grade : tour.getGrades() )
+		{
+			avgGrade = avgGrade + grade.getGrade();
+		}
+		
+		avgGrade = avgGrade / tour.getGrades().size();
+		
+		return avgGrade;
+	}
+	
+	public List<Tour> getBestOrWorst(Guide guide, boolean best)
+	{
+		List<Tour> tourList = new ArrayList<Tour>();
+		Float avgGrade = 0f;
+		
+		for(Tour tour : guide.getTours())
+		{
+			if(tour.getTime().isAfter(LocalDateTime.now().minusMonths(1)) && tour.getGrades().size() > 0)
+			{
+				if(best)
+				{
+					if(getTourAverageGrade(tour) > avgGrade || avgGrade == 0f)
+					{
+						avgGrade = getTourAverageGrade(tour);
+					}
+				}
+				else
+				{
+
+					if(getTourAverageGrade(tour) < avgGrade || avgGrade == 0f)
+					{
+						avgGrade = getTourAverageGrade(tour);
+					}
+				}
+			}
+		}
+		for(Tour tour : guide.getTours())
+		{
+			if(getTourAverageGrade(tour).equals(avgGrade))
+			{
+				tourList.add(tour);
+			}
+		}
+		
+		return tourList;
+	}
+	
+	public List<Tour> getMostPopular(Guide guide)
+	{
+		List<Tour> tourList = new ArrayList<Tour>();
+		int maxCustomers = 0;
+		
+		for(Tour tour : guide.getTours())
+		{
+			if(tour.getTourists().size() > maxCustomers)
+			{
+				maxCustomers = tour.getTourists().size();
+			}
+		}
+		
+		for(Tour tour : guide.getTours())
+		{
+			if(tour.getTourists().size() == maxCustomers)
+			{
+				tourList.add(tour);
+			}
+		}
+		return tourList;
+	}
+//GRADES====================================================================================
 
 //QUERIES===================================================================================	
 	public ArrayList<Tour> getPublishedByGuide(String guide)

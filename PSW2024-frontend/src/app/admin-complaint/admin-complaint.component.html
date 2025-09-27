@@ -1,0 +1,12 @@
+<div *ngFor="let complaint of complaints">
+  <div>
+  <p>Author: {{ complaint.tourist }}</p>
+  <p>Name: {{ complaint.name }}</p>
+  <p>Description: {{ complaint.description }}</p>
+  </div>
+
+  <div>
+  <button (click)="onHold(complaint)">Return</button>
+  <button (click)="reject(complaint)">Reject</button>
+  </div>
+</div>

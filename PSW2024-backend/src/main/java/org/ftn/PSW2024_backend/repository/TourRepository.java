@@ -21,5 +21,4 @@ public interface TourRepository extends JpaRepository<Tour, Long>{
 	List<Tour> findByGuideAndIsPublishedFalse(User guide);
 	List<Tour> findByGuideAndIsPublishedTrue(User guide);
 	List<Tour> findByCategory(String category);
-
 }

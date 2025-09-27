@@ -1,0 +1,19 @@
+<html>
+	<p></p>
+	<form [formGroup]="createComplaintForm" (ngSubmit)="onSubmit()">
+    <div>
+    	 <label for="name">Name</label>
+     	 <input id="name" formControlName="name" type="text" />	
+     	 <div *ngIf="formControls['name'].invalid && formControls['name'].touched">Name is required.</div>
+    </div>
+    <div>
+   		 <label for="description">Description</label>
+   		 <textarea id="description" formControlName="description"></textarea>
+    	 <div *ngIf="formControls['description'].invalid && formControls['description'].touched">Description is required</div>
+    </div>
+
+    <button type="submit" [disabled]="createComplaintForm.invalid">Submit</button>
+    <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
+  </form>
+</html>
+

@@ -1,19 +1,26 @@
 package org.ftn.PSW2024_backend.model;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CollectionTable;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
-@Entity
-@Table(name = "complaints")
+import org.ftn.PSW2024_backend.event.ComplaintStatusUpdatedEvent;
+
 public class Complaint {
 
     @Id
@@ -23,7 +30,11 @@ public class Complaint {
 	
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
-    private User user; 
+    private Tourist tourist; 
+    
+    @ManyToOne
+    @JoinColumn(name = "guide_id", nullable = false, unique = false)
+    private Guide guide; 
 
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false, unique = false)
@@ -35,21 +46,29 @@ public class Complaint {
     @Column(name = "description", nullable = false, unique = false)
     private String description; 
     
-    
-	@Enumerated(EnumType.STRING) 
-    @Column(nullable = false, unique = false)
+    @Transient
     private ComplaintStatus status;
+    
+    public ComplaintStatusUpdatedEvent updateStatus(ComplaintStatus status) {
+        ComplaintStatus oldStatus = this.status;
+        this.status = status;
+        return new ComplaintStatusUpdatedEvent(this.id, oldStatus, status);
+    }
+	
+    public void applyStatusChangeEvent(ComplaintStatusUpdatedEvent event) {
+        this.status = event.getNewStatus();
+    }
 
 	public Complaint() {}
 
-	public Complaint(Long id, User user, Tour tour, String name, String description, ComplaintStatus status) {
+	public Complaint(Tourist tourist, Guide guide, Tour tour, String name, String description) {
 		super();
-		this.id = id;
-		this.user = user;
+		this.tourist = tourist;
+		this.guide = guide;
 		this.tour = tour;
 		this.name = name;
 		this.description = description;
-		this.status = status;
+		this.status = ComplaintStatus.OnHold;
 	}
 
 
@@ -62,16 +81,21 @@ public class Complaint {
 		this.id = id;
 	}
 
-
-	public User getUser() {
-		return user;
+	public Tourist getTourist() {
+		return tourist;
 	}
 
-
-	public void setUser(User user) {
-		this.user = user;
+	public void setTourist(Tourist tourist) {
+		this.tourist = tourist;
 	}
 
+	public Guide getGuide() {
+		return guide;
+	}
+
+	public void setGuide(Guide guide) {
+		this.guide = guide;
+	}
 
 	public Tour getTour() {
 		return tour;
@@ -102,17 +126,12 @@ public class Complaint {
 		this.description = description;
 	}
 
-
 	public ComplaintStatus getStatus() {
 		return status;
 	}
 
-
 	public void setStatus(ComplaintStatus status) {
 		this.status = status;
 	}
-	
-	
-	
 	
 }

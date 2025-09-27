@@ -147,6 +147,16 @@ public class TourController {
 		     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @GetMapping("/getPurchased/{tourist}")
+    public ResponseEntity<List<TourDTO>> getAvailablePurchased(@PathVariable String tourist) {
+        try {
+            return new ResponseEntity<>(tourService.getPurchasedTours(tourist), HttpStatus.OK); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }
 

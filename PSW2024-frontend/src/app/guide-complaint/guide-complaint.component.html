@@ -1,0 +1,17 @@
+<div *ngFor="let complaint of complaints">
+  <div>
+  <p>Author: {{ complaint.tourist }}</p>
+  <p>Name: {{ complaint.name }}</p>
+  <p>Description: {{ complaint.description }}</p>
+  </div>
+
+  <div>
+  <label *ngIf="isResolved(complaint)">Resolved</label>
+  <label *ngIf="isRejected(complaint)">Rejected</label>
+  <label *ngIf="isForReview(complaint)">Pending review</label>
+  <ng-container *ngIf="!(isResolved(complaint) || isRejected(complaint))">
+    <button (click)="resolve(complaint)">Resolved</button>
+    <button (click)="forReview(complaint)">For Review</button>
+  </ng-container>
+  </div>
+</div>

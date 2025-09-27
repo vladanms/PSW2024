@@ -125,7 +125,7 @@ public class Tour {
 		this.price = price;
 	}
 
-	public User getGuide() {
+	public Guide getGuide() {
 		return guide;
 	}
 
