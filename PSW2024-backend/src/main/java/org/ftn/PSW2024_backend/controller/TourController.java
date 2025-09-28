@@ -140,6 +140,16 @@ public class TourController {
         }
     }
     
+    @GetMapping("/getAwarded/{tourist}")
+    public ResponseEntity<List<TourDTO>> getAwarded(@PathVariable String tourist) {
+        try {
+            return new ResponseEntity<>(tourService.getAwardedTours(tourist), HttpStatus.OK); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @DeleteMapping("/deleteTour/{guideName}/{tourId}")
     public ResponseEntity<Map <String, String>> deleteTour(@PathVariable String guideName, @PathVariable String tourId) {
     	Map<String, String> response = new HashMap<>();

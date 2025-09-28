@@ -99,6 +99,28 @@ public class MessagingService {
 	    System.out.println("mail sent!");
 	}
 	
+	public void reminderMail(User recipient, Tour tour) throws MessagingException, UnsupportedEncodingException 
+	{
+	    String toAddress = recipient.getEmail();
+	    String fromAddress = this.senderMail; 
+	    String senderName = "PSW2024";
+	    String subject = "You might be interested in this";
+	    String content = recipient.getUsername() + ",<br>"
+	            + "A tour you've purchased, " + tour.getName() + " is scheduled 48 hours from now.";
+	     
+	    MimeMessage message = sender.createMimeMessage();
+	    MimeMessageHelper helper = new MimeMessageHelper(message);
+	     
+	    helper.setFrom(fromAddress, senderName);
+	    helper.setTo(toAddress);
+	    helper.setSubject(subject);	     
+	    helper.setText(content, true);
+	     
+	    sender.send(message);
+	    
+	    System.out.println("mail sent!");
+	}
+	
 	public void purchaseConfirmationMail(User recipient, List<Tour> tours) throws MessagingException, UnsupportedEncodingException 
 	{
 	    String toAddress = recipient.getEmail();

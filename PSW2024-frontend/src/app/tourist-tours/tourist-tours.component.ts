@@ -29,7 +29,7 @@ export class TouristToursComponent {
       return;
    }
 
-   this.touristToursService.getAvailable(tourist).subscribe({
+   this.touristToursService.getPurchased(tourist).subscribe({
      next: (tours) => {
      	this.tours = tours;
      	this.cdRef.detectChanges();

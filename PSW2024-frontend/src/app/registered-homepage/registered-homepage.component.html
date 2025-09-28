@@ -9,6 +9,11 @@
 	<button (click) = "logout()">Logout</button>
 	  </div>
 	</header>
+	<div>
+  <button (click)="viewAwarded()">
+    {{ showAwarded ? 'Show All' : 'Show Awarded Only' }}
+  </button>
+</div>
 <div *ngFor="let tour of tours" class="tour-box">
   <div>
   <label><strong>{{ tour.name }}</strong></label>

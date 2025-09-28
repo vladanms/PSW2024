@@ -7,7 +7,9 @@ import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.Date;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +33,7 @@ import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -52,6 +55,9 @@ public class TourService {
 	
 	@Autowired
 	private MessagingService messagingService;
+	
+	@Autowired
+	private TaskScheduler taskScheduler;
 
 //GUIDE FUNCTIONS===========================================================================		
 	public String scheduleTour(ScheduleDTO scheduleDTO)
@@ -293,6 +299,8 @@ public class TourService {
 			
 			users.save(tourist);
 			tours.save(tour);
+			
+			this.scheduleTourReminder(tourist, tour);
 		}
 	
 		if(usePoints)
@@ -339,6 +347,55 @@ public class TourService {
 		for( Tour tour : tourList)
 		{
 			if(tour.isPublished())
+			{
+				List<String> touristNames = new ArrayList<String>();
+				for(User t : tour.getTourists())
+				{
+					touristNames.add(t.getUsername());
+				}
+			
+				TourDTO dto = new TourDTO(
+					tour.getId(),
+					tour.getName(),
+					tour.getDescription(),
+					tour.getCategory(),
+					tour.getDifficulty(),
+					tour.getPrice(),
+					tour.getTime(),
+					tour.getGuide().getUsername(),
+					touristNames,
+				    tour.getKeyPoints(),
+				    tour.getComplaints(),
+				    tour.isPublished(),
+				    tour.getGrades()
+			);
+			availableTours.add(dto);
+			}
+		}
+		return availableTours;
+		
+	}
+	
+	public List<TourDTO> getAwardedTours(String touristName)
+	{
+	Tourist tourist = (Tourist) users.findByUsername(touristName);
+	
+		List<TourDTO> availableTours = new ArrayList<TourDTO>();
+		
+		List<Tour> tourList = tours.findAll();
+		
+		Iterator<Tour> iterator = tourList.iterator();
+		    while (iterator.hasNext()) {
+		        Tour t = iterator.next();
+		        if (t.getTourists().contains(tourist)) {
+		            iterator.remove();
+		        }
+		    }
+
+		
+		for( Tour tour : tourList)
+		{
+			if(tour.isPublished() && tour.getGuide().isAwarded())
 			{
 				List<String> touristNames = new ArrayList<String>();
 				for(User t : tour.getTourists())
@@ -427,6 +484,19 @@ public class TourService {
 		
 		tours.save(tour);
 		return "success";
+	}
+	
+	private void scheduleTourReminder(Tourist tourist,Tour tour) {
+	
+	    Date reminderTime = Date.from(tour.getTime().minusHours(48).atZone(ZoneId.systemDefault()).toInstant());
+
+	    taskScheduler.schedule(() -> {
+	        try {
+	        	messagingService.reminderMail(tourist, tour);
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	        }
+	    }, reminderTime);
 	}
 //TOURIST FUNCTIONS=========================================================================
 	

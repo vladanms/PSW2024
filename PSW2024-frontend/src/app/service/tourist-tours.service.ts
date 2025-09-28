@@ -13,7 +13,7 @@ export class TouristToursService {
   
   constructor(private http: HttpClient) { }
   
-    getAvailable(tourist : String): Observable<TourDTO[]> {
+    getPurchased(tourist : String): Observable<TourDTO[]> {
     return this.http.get<TourDTO[]>(`${this.apiHost}tour/getPurchased/${tourist}`, {withCredentials: true});
   	}
 }

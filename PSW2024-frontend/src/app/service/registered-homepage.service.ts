@@ -16,4 +16,8 @@ export class RegisteredHomepageService {
     getAvailable(tourist : String): Observable<TourDTO[]> {
     return this.http.get<TourDTO[]>(`${this.apiHost}tour/getAvailable/${tourist}`, {withCredentials: true});
   	}
+  	
+  	getAwarded(tourist : String): Observable<TourDTO[]> {
+    return this.http.get<TourDTO[]>(`${this.apiHost}tour/getAwarded/${tourist}`, {withCredentials: true});
+  	}
 }

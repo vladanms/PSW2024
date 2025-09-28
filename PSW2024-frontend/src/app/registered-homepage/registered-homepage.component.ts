@@ -22,25 +22,11 @@ export class RegisteredHomepageComponent {
   selectedKeyPoint: KeyPointDTO | null = null;
   constructor(private registeredHomepageService: RegisteredHomepageService, private router: Router, private loginService : LoginService, private cdRef : ChangeDetectorRef) {}
   initializedMapIds = new Set<number>();
+  showAwarded : boolean = false;
 
   ngOnInit(): void 
   {
-   const tourist = localStorage.getItem('loggedUser');
-      if (!tourist) {
-      alert('Tourist not found in localStorage');
-      return;
-   }
-
-   this.registeredHomepageService.getAvailable(tourist).subscribe({
-     next: (tours) => {
-     	this.tours = tours;
-     	this.cdRef.detectChanges();
-     	setTimeout(() => {
-          	this.tours.forEach(tour => this.initMap(tour));
-        }, 50);
-      },
-      error: err => console.error('Error loading tours', err)
-    });
+     this.loadTours();
   }
   
     initMap(tour: TourDTO): void 
@@ -84,8 +70,38 @@ export class RegisteredHomepageComponent {
   	map.fitBounds(polyline.getBounds());    
   }
   
-   selectKeyPoint(keypoint: KeyPointDTO) {
+   selectKeyPoint(keypoint: KeyPointDTO)
+   {
     this.selectedKeyPoint = keypoint;
+   }
+  
+  loadTours(): void
+   {
+  const tourist = localStorage.getItem('loggedUser');
+  if (!tourist) {
+    alert('Tourist not found in localStorage');
+    return;
+  }
+
+  const awarded = this.showAwarded
+    ? this.registeredHomepageService.getAwarded(tourist)
+    : this.registeredHomepageService.getAvailable(tourist);
+
+  awarded.subscribe({
+    next: (tours) => {
+      this.tours = tours;
+      this.selectedKeyPoint = null;
+      this.cdRef.detectChanges();
+      setTimeout(() => this.tours.forEach(t => this.initMap(t)), 50);
+    },
+    error: err => console.error('Error loading tours', err)
+  });
+}
+  
+  viewAwarded(): void 
+  {
+  this.showAwarded = !this.showAwarded;
+  this.loadTours();
   }
   
   AddToCart(tour: TourDTO): void 
@@ -138,14 +154,7 @@ export class RegisteredHomepageComponent {
 
   refresh(): void 
   {
-    const tourist = localStorage.getItem('loggedUser');
-    if (!tourist) return;
-    this.registeredHomepageService.getAvailable(tourist).subscribe(tours => {
-      this.tours = tours;
-      this.selectedKeyPoint = null;
-      this.cdRef.detectChanges();
-      setTimeout(() => this.tours.forEach(t => this.initMap(t)), 50);
-    });
+      this.loadTours();
   }  
   
   checkout() : void

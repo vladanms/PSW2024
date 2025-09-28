@@ -106,9 +106,9 @@ export class TouristCheckoutComponent {
             localStorage.removeItem('tourIds');
     		localStorage.removeItem('cart');
     		localStorage.removeItem('tourPrices');
-    	    this.refreshCart();
       }
-    }); 
+    });
+	this.router.navigate(['/registeredHomepage'])
   }
     back()
   	{
