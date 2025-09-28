@@ -19,7 +19,7 @@ export class GuideDraftsService {
   	}
   
   	publish(tourId : String): Observable<any>{
-	return this.http.post<TourDTO[]>(`${this.apiHost}tour/publishTour/${tourId}`, null, {withCredentials: true });
+	return this.http.post<TourDTO[]>(`${this.apiHost}tour/publishTour/${tourId}`, {}, {withCredentials: true });
 	}
 	
 	delete(guideName : String, tourId : String): Observable<TourDTO[]>{

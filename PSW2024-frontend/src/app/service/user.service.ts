@@ -21,6 +21,6 @@ export class UserService {
   	}
   	
   	banUser(username : String): Observable<void> {
-    return this.http.post<void>(`${this.apiHost}user/banUser/${username}`, {withCredentials: true});
+    return this.http.post<void>(`${this.apiHost}user/banUser/${username}`, {}, {withCredentials: true});
   }
 }

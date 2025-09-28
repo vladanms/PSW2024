@@ -24,7 +24,7 @@ export class ComplaintService {
   }
   
    changeStatus(complaintId: string, status: string): Observable<void> {
-    return this.http.post<void>(`${this.apiHost}complaint/updateStatus/${complaintId}/${status}`, { withCredentials: true });
+    return this.http.post<void>(`${this.apiHost}complaint/updateStatus/${complaintId}/${status}`, {},  { withCredentials: true });
   }
 
 }
