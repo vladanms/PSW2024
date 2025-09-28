@@ -14,6 +14,6 @@ export class TourDTO {
   tourists !: string[];
   keyPoints !: KeyPointDTO[];
   complaints !: ComplaintDTO[];
-  isPublished !: boolean;
+  published !: boolean;
   grades  !: GradeDTO[];
 }

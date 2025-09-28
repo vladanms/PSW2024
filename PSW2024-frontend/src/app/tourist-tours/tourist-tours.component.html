@@ -1,3 +1,9 @@
+<header class  = "subpage-header">			
+<div class  = "blocker"></div>
+	<div class="subpage-header-component">
+	<button (click) = "back()">Back</button>
+	</div>
+	</header>
 <div *ngFor="let tour of tours" class="tour-box">
   <div>
   <label><strong>{{ tour.name }}</strong></label>/
@@ -18,8 +24,8 @@
          style="height: 200px; width: 300px">
   </div>
   <div>
-  <button (click)="grade(tour)">Add</button>
-  <button (click)="complaint(tour)">Remove</button>
+  <button (click)="grade(tour)">Grade</button>
+  <button (click)="complaint(tour)">File complaint</button>
 
   </div>
 </div>

@@ -33,16 +33,16 @@ public class Tourist extends User{
 	@ManyToMany(mappedBy = "tourists")
 	private List<Tour> tours = new ArrayList<>();
 
- 
-	 @Column(insertable = false, updatable = false)
-	 private UserType type;
-	
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "interests", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "interests")
     private List<UserInterests> interests;
 
+    public Tourist() {
+        super();
+    }
+    
 	public Tourist(String username, String password, String email, String name, String surname, List<UserInterests> interests) {
 		super(username, password, email, name, surname, "Tourist");
 		this.rewardPoints = 0;
@@ -50,6 +50,7 @@ public class Tourist extends User{
 		this.isMalicious = false;
 		this.isBanned = false;
 		this.tours = new ArrayList<>(); 
+		this.interests = interests;
 	}
 
 	public int getRewardPoints() {

@@ -13,11 +13,19 @@ public class ComplaintStatusUpdatedEvent {
     private ComplaintStatus newStatus;
     private LocalDateTime timestamp;
 
-    public ComplaintStatusUpdatedEvent(Long complaintId,ComplaintStatus oldStatus, ComplaintStatus newStatus) {
+    public ComplaintStatusUpdatedEvent(Long complaintId, ComplaintStatus oldStatus, ComplaintStatus newStatus) {
         this.complaintId = complaintId;
         this.oldStatus = oldStatus;
         this.newStatus = newStatus;
         this.timestamp = LocalDateTime.now();
+    }
+    
+    public ComplaintStatusUpdatedEvent toDomainEvent() {
+        return new ComplaintStatusUpdatedEvent(
+            this.complaintId,
+            this.oldStatus,
+            this.newStatus
+        );
     }
 
     public Long getComplaintId() {

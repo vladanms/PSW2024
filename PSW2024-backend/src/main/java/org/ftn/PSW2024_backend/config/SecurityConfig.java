@@ -61,7 +61,7 @@ public class SecurityConfig{
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(authz -> authz
                                 .antMatchers("/user/login", "/user/register").permitAll()
-                                .antMatchers("/tour/**").hasRole("GUIDE")
+                                .antMatchers("/tour/**").permitAll()
                 )
                 .formLogin(login -> login.disable())
                 .logout(logout -> logout

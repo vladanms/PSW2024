@@ -1,1 +1,21 @@
-<p>tourist-grade works!</p>
+<html>
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
+	</header>
+<form (ngSubmit)="onSubmit()" class="grade-form">
+
+  <label><strong>Your grade:</strong></label>
+  <select [(ngModel)]="selectedGrade" name="grade">
+    <option [ngValue]="null" disabled>Select grade</option>
+    <option *ngFor="let option of gradesOptions" [ngValue]="option">{{ option }}</option>
+  </select>
+
+  <label><strong>Description:</strong></label>
+  <textarea [(ngModel)]="description" name="content"></textarea>
+
+  <button type="submit" [disabled]="!isValid()">Submit Grade</button>
+</form>
+</html>

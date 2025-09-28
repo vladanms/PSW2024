@@ -110,6 +110,9 @@ export class TouristCheckoutComponent {
       }
     }); 
   }
-
+    back()
+  	{
+		  this.router.navigate(['/registeredHomepage'])
+	}
 
 }

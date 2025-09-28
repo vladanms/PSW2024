@@ -21,6 +21,9 @@ import javax.persistence.Transient;
 
 import org.ftn.PSW2024_backend.event.ComplaintStatusUpdatedEvent;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
 public class Complaint {
 
     @Id
@@ -28,14 +31,17 @@ public class Complaint {
 	@Column(name = "id", unique = true, nullable = false)
     private Long id;
 	
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false, unique = false)
     private Tourist tourist; 
     
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "guide_id", nullable = false, unique = false)
     private Guide guide; 
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "tour_id", nullable = false, unique = false)
     private Tour tour; 

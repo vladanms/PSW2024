@@ -6,6 +6,7 @@ import java.util.List;
 import javax.transaction.Transactional;
 
 import org.ftn.PSW2024_backend.dto.ComplaintDTO;
+import org.ftn.PSW2024_backend.dto.FileComplaintDTO;
 import org.ftn.PSW2024_backend.event.ComplaintStatusUpdatedEvent;
 import org.ftn.PSW2024_backend.model.Complaint;
 import org.ftn.PSW2024_backend.model.ComplaintStatus;
@@ -34,7 +35,7 @@ public class ComplaintService {
 	@Autowired
 	private UserRepository users;
 	
-	public String createComplaint(ComplaintDTO complaintDTO) 
+	public String createComplaint(FileComplaintDTO complaintDTO) 
 	{
 	     Complaint complaint = new Complaint( 
 	        (Tourist) users.findByUsername(complaintDTO.getTourist()),
@@ -102,8 +103,14 @@ public class ComplaintService {
 	{
 		List<ComplaintDTO> complaintDTOs = new ArrayList<ComplaintDTO>();
 		
-		for(Complaint complaint : complaints.findAllByStatus(ComplaintStatus.valueOf(status)))
-		{
+	    for (Complaint complaint : complaints.findAll()) {
+	        List<ComplaintStatusLog> statusLogs = logs.findByComplaintIdOrderByTimestampAsc(complaint.getId());
+
+	        for (ComplaintStatusLog log : statusLogs) {
+	            complaint.applyStatusChangeEvent(log.toDomainEvent());
+	        }
+
+	        if (complaint.getStatus() == ComplaintStatus.valueOf(status)) {
 			ComplaintDTO dto = new ComplaintDTO(
 					complaint.getId().toString(),
 					complaint.getTourist().getUsername(),
@@ -115,7 +122,8 @@ public class ComplaintService {
 					);
 			
 			complaintDTOs.add(dto);
-		}
+	        }
+	    }
 		return complaintDTOs;
 	}
 }

@@ -15,7 +15,7 @@ export class TouristComplaintComponent {
   image: File | null = null;
 
   constructor(
-    private fb: FormBuilder,private createTourService: TouristComplaintService, private router: Router	)
+    private fb: FormBuilder,private touristComplaintService: TouristComplaintService, private router: Router	)
   	{
     this.createComplaintForm = this.fb.group({
 	  name: ['', [Validators.required]],
@@ -32,7 +32,23 @@ export class TouristComplaintComponent {
    		}
     	
     const complaint: ComplaintDTO = this.createComplaintForm.value;
-   	this.createTourService.createComplaint(complaint);
+  	const tourist = localStorage.getItem('loggedUser');
+  	const tourId = localStorage.getItem('tourId');
+  	const guide = localStorage.getItem('guide');
+
+  	complaint.tourist = tourist || '';
+  	complaint.tourId = tourId || '';
+  	complaint.guide = guide || '';
+    
+      this.touristComplaintService.createComplaint(complaint).subscribe(
+      (response) => {
+        alert('Success!');
+        this.router.navigate(['/touristTours']);
+      },
+      (error) => {
+        alert('An error occurred');
+      });
+   
     }
     
       
@@ -40,4 +56,10 @@ export class TouristComplaintComponent {
     {
     return this.createComplaintForm.controls;
   	} 
+  	
+    back()
+  	{
+		  this.router.navigate(['/touristTours'])
+	}
+
  }

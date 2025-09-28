@@ -1,0 +1,30 @@
+<html>
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
+	</header>
+	<p></p>
+	<form [formGroup]="interestForm" (ngSubmit)="onSubmit()">
+	    <div>
+      <label>Interests</label>
+      <div *ngFor="let interest of interests">
+        <label>
+          <input
+            type="checkbox"
+            [value]="interest"
+            (change)="onInterestSelection($event)"
+            [checked]="interestForm.value.interests.includes(interest)"
+          />
+          {{ interest }}
+        </label>
+      </div>
+      <div *ngIf="formControls['interests'].invalid && formControls['interests'].touched">
+        At least one interest must be selected.
+      </div>
+    </div>
+   <button type="submit" [disabled]="interestForm.invalid">Apply</button>
+	</form>
+	
+</html>

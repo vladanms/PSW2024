@@ -1,20 +1,25 @@
-<div>
-  <h2>Cart:</h2>
-  <div *ngFor="let tour of tours">
-    <div>
-      <span>{{ tour.name }}</span> - 
-      <span>{{ tour.price | currency }}</span>
-      <button (click)="removeFromCart(tour)">Remove</button>
-    </div>
-  </div>
-
-  <div class>
+<html> 
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
+	</header>
+	 <div>
     <label>
       Use Reward Points
       <input type="checkbox" [(ngModel)]="useRewardPoints" (change)="toggleRewardPoints($event)">
     </label>
   </div>
-
+<div>
+  <h2>Cart:</h2>
+  <div *ngFor="let tour of tours">
+    <div>
+      <label>{{ tour.name }}</label> - 
+      <label>{{ tour.price}}</label>
+      <button (click)="removeFromCart(tour)">Remove</button>
+    </div>
+  </div>
   <div>
     <h3>Total Price: 
       <span>{{ finalPrice }}</span>
@@ -23,6 +28,7 @@
       </span>
  	</h3>
 </div>
-
   <button (click)="checkout()">Purchase</button>
 </div>
+</html>
+/

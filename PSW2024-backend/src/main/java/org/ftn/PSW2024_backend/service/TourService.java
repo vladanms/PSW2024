@@ -1,13 +1,19 @@
 package org.ftn.PSW2024_backend.service;
 
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.headerDoesNotExist;
+
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+
+import javax.mail.MessagingException;
 
 import org.springframework.stereotype.Service;
 import org.ftn.PSW2024_backend.dto.ComplaintDTO;
@@ -25,10 +31,12 @@ import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.multipart.MultipartFile;
 
 import org.ftn.PSW2024_backend.model.Guide;
 import org.ftn.PSW2024_backend.model.User;
+import org.ftn.PSW2024_backend.model.UserInterests;
 
 @Service
 public class TourService {
@@ -41,10 +49,9 @@ public class TourService {
 	
 	@Value("${image.directory:images}")
 	private String imageDirectory;
-	public ArrayList<Tour> getToursByGuide(String guide)
-	{
-		return (ArrayList<Tour>) tours.findByGuide(guide);
-	}
+	
+	@Autowired
+	private MessagingService messagingService;
 
 //GUIDE FUNCTIONS===========================================================================		
 	public String scheduleTour(ScheduleDTO scheduleDTO)
@@ -69,6 +76,23 @@ public class TourService {
 	public String publishTour(String tourId)
 	{
 		Tour tour = tours.findById(Long.parseLong(tourId)).orElse(null);
+		
+		List<User> toNotify = users.findAllTourists();
+		
+		for(User u : toNotify)
+		{
+			Tourist tourist = (Tourist) u;
+			if(tourist.getInterests().contains(UserInterests.valueOf(tour.getCategory())))
+			{
+				try {
+					messagingService.notifyTouristMail(tourist, tour);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		if(tour.getKeyPoints().size() < 2) {
 			return "keypointError";
@@ -105,7 +129,37 @@ public class TourService {
 		return("success");
 	}
 	
-	
+	public List<TourDTO> getAllByGuide(String guide)
+	{
+		List<TourDTO> tourList = new ArrayList<TourDTO>();
+		
+		for( Tour tour : ((ArrayList<Tour>) tours.findAllByGuide((Guide) users.findByUsername(guide))))
+		{
+			List<String> touristNames = new ArrayList<String>();
+			for(User t : tour.getTourists())
+			{
+				touristNames.add(t.getUsername());
+			}
+			
+			TourDTO dto = new TourDTO(
+					tour.getId(),
+					tour.getName(),
+					tour.getDescription(),
+					tour.getCategory(),
+					tour.getDifficulty(),
+					tour.getPrice(),
+					tour.getTime(),
+					tour.getGuide().getUsername(),
+					touristNames,
+				    tour.getKeyPoints(),
+				    tour.getComplaints(),
+				    tour.isPublished(),
+				    tour.getGrades()
+			);
+			tourList.add(dto);
+		}
+		return tourList;
+	}
 	
 	
 	public List<TourDTO> getDraftsByGuide(String guide)
@@ -144,7 +198,7 @@ public class TourService {
 	{
 		Tour tour = tours.findById(Long.parseLong(tourId)).orElse(null);
 
-		if(!tour.getGuide().getName().equals(guideName))
+		if(!tour.getGuide().getUsername().equals(guideName))
 		{
 			return "forbidden";
 		}
@@ -182,6 +236,38 @@ public class TourService {
 		return "success";
 	}
 	
+	
+	@Scheduled(cron = "0 0 0 1 * ?")  
+    public void monthlyReport() {
+        System.out.println("Monthly report triggered: " + LocalDateTime.now());
+
+        LocalDateTime startDate = LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0).minusMonths(1);
+
+        List<User> toNotify = users.findAllGuides();
+		
+		for(User u : toNotify)
+		{
+			Guide guide = (Guide) u;
+			{
+				int totalSold = 0;
+				List<Tour> forReport = tours.findByGuideAndTimeAfter(guide, startDate);
+				for(Tour tour : forReport)
+				{
+					totalSold = totalSold + tour.getTourists().size();
+				}
+				List<Tour> bestTours = getBestOrWorst(guide, true);
+				List<Tour> worstTours = getBestOrWorst(guide, false);
+				
+				try {
+					messagingService.MonthlyReportMail(guide, totalSold, bestTours, worstTours);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+    }
 //GUIDE FUNCTIONS===========================================================================
 	
 //TOURIST FUNCTIONS=========================================================================
@@ -191,10 +277,12 @@ public class TourService {
 		Tourist tourist = (Tourist) users.findByUsername(touristName);
 		int price = 0;
 		List<Tour> tourList = tourist.getTours();
+		List<Tour> purchased = new ArrayList<Tour>();
 		
 		for(String id : tourIds)
 		{
 			Tour tour = tours.findById(Long.parseLong(id)).orElse(null);
+			purchased.add(tour);
 			price = price + tour.getPrice();
 			
 			List<Tourist> touristList = tour.getTourists();
@@ -219,15 +307,17 @@ public class TourService {
 			users.save(tourist);
 		}
 		
+		try {
+			messagingService.purchaseConfirmationMail(tourist, purchased);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			e.printStackTrace();
+		}
+		
 		return "success";
 	}
 	
-	public String makeComplaint(ComplaintDTO complaintDTO)
-	{
-		
-		
-		return "success";
-	}
 
 	public List<TourDTO> getAvailableTours(String touristName)
 	{
@@ -236,23 +326,27 @@ public class TourService {
 		List<TourDTO> availableTours = new ArrayList<TourDTO>();
 		
 		List<Tour> tourList = tours.findAll();
-		for(Tour t : tourList)
-		{
-			if(t.getTourists().contains(tourist))
-			{
-				tourList.remove(t);
-			}
-		}	
+		
+		Iterator<Tour> iterator = tourList.iterator();
+		    while (iterator.hasNext()) {
+		        Tour t = iterator.next();
+		        if (t.getTourists().contains(tourist)) {
+		            iterator.remove();
+		        }
+		    }
+
 		
 		for( Tour tour : tourList)
 		{
-			List<String> touristNames = new ArrayList<String>();
-			for(User t : tour.getTourists())
+			if(tour.isPublished())
 			{
-				touristNames.add(t.getUsername());
-			}
+				List<String> touristNames = new ArrayList<String>();
+				for(User t : tour.getTourists())
+				{
+					touristNames.add(t.getUsername());
+				}
 			
-			TourDTO dto = new TourDTO(
+				TourDTO dto = new TourDTO(
 					tour.getId(),
 					tour.getName(),
 					tour.getDescription(),
@@ -268,8 +362,10 @@ public class TourService {
 				    tour.getGrades()
 			);
 			availableTours.add(dto);
+			}
 		}
 		return availableTours;
+		
 	}
 	
 	public List<TourDTO> getPurchasedTours(String touristName)
@@ -346,7 +442,8 @@ public class TourService {
 		
 		for(Tour tour : guide.getTours())
 		{
-			if(tour.getTime().isAfter(LocalDateTime.now().minusMonths(1)) && tour.getGrades().size() > 0)
+			if(tour.getTime().isAfter(LocalDateTime.now().withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0).minusMonths(1))
+					&& tour.getGrades().size() > 0)
 			{
 				if(best)
 				{

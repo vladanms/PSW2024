@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.mail.MessagingException;
+import javax.ws.rs.ForbiddenException;
 
 import org.ftn.PSW2024_backend.model.*;
 import org.ftn.PSW2024_backend.repository.UserRepository;
@@ -46,16 +47,25 @@ public class UserService{
 		return(users.findByUsername(username).getType());
 	}
 	
-	public User authenticate(LoginDTO loginDTO) {
+	public User authenticate(LoginDTO loginDTO) {	
 		 try {
+			 User user = users.findByUsername(loginDTO.getUsername());
+
+			 if (user instanceof Guide && ((Guide) user).isBanned()) {
+		            throw new BadCredentialsException("Your account has been banned.");
+		        }
+			 if (user instanceof Tourist && ((Tourist) user).isBanned()) {
+		            throw new BadCredentialsException("Your account has been banned.");
+		        }
 			  Authentication auth = authenticationManager.authenticate(
 			            new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
 			        );
 			  		SecurityContextHolder.getContext().setAuthentication(auth);
 			        return users.findByUsername(loginDTO.getUsername());
+
 			 } 
 			 catch (AuthenticationException e) {
-				 System.out.println("LOGIN USER" + users.findByUsername(loginDTO.getUsername()) + " PASSWORD " + users.findByUsername(loginDTO.getPassword()));
+				 System.out.println("LOGIN USER" + users.findByUsername(loginDTO.getUsername()) + " PASSWORD " + users.findByUsername(loginDTO.getUsername()).getPassword());
 				 throw new BadCredentialsException("Invalid username or password");
 			    } 
 	}
@@ -87,6 +97,21 @@ public class UserService{
 	{
 		Tourist tourist = (Tourist) users.findByUsername(username);
 		return tourist.getRewardPoints();
+	}
+	
+	public String setInterests(String username, String[] interests)
+	{
+		Tourist tourist = (Tourist) users.findByUsername(username);
+		List<UserInterests> userInterests = new ArrayList<UserInterests>();
+		
+		for(String s : interests)
+		{
+			userInterests.add(UserInterests.valueOf(s));
+		}
+		
+		tourist.setInterests(userInterests);
+		users.save(tourist);
+		return "success";
 	}
 
 }

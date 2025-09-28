@@ -6,6 +6,9 @@ import { ComplaintDTO } from '../dto/ComplaintDTO';
 import { KeyPointDTO } from '../dto/KeyPointDTO';
 import * as Leaflet from 'leaflet';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
+
+
 @Component({
   selector: 'app-tourist-tours',
   templateUrl: './tourist-tours.component.html',
@@ -15,7 +18,7 @@ export class TouristToursComponent {
 	
   tours: TourDTO[] = [];
   selectedKeyPoint: KeyPointDTO | null = null;
-  constructor(private touristToursService: TouristToursService, private router: Router) {}
+  constructor(private touristToursService: TouristToursService, private router: Router, private cdRef : ChangeDetectorRef) {}
   initializedMapIds = new Set<number>();
 
   ngOnInit(): void 
@@ -29,9 +32,10 @@ export class TouristToursComponent {
    this.touristToursService.getAvailable(tourist).subscribe({
      next: (tours) => {
      	this.tours = tours;
+     	this.cdRef.detectChanges();
      	setTimeout(() => {
           	this.tours.forEach(tour => this.initMap(tour));
-        }, 0);
+        }, 50);
       },
       error: err => console.error('Error loading tours', err)
     });
@@ -81,12 +85,20 @@ export class TouristToursComponent {
 
 	grade(tour : TourDTO) : void
 	{
-		
+		localStorage.setItem('tourId', tour.id.toString());
+		this.router.navigate(['/touristGrade'])		
 	}
 	
 	complaint(tour : TourDTO) : void
 	{
-		
+		localStorage.setItem('guide', tour.guide);
+		localStorage.setItem('tourId', tour.id.toString());
+		this.router.navigate(['/touristComplaint'])	
+	}
+	
+	back()
+  	{
+		  this.router.navigate(['/touristHomepage'])
 	}
 
 }

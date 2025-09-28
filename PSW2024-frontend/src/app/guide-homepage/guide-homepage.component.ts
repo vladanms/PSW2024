@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { LoginService } from '../service/login.service';
 
 @Component({
   selector: 'app-guide-homepage',
@@ -8,7 +9,7 @@ import { Router } from '@angular/router';
 })
 export class GuideHomepageComponent {
 
-constructor(private router: Router) { }
+constructor(private router: Router, private loginService : LoginService) { }
 
   	createTour()
   	{
@@ -24,5 +25,14 @@ constructor(private router: Router) { }
   	{
 		this.router.navigate(['/register']);
 	};
-
+	logout(): void 
+	{
+  	this.loginService.logout().subscribe({
+    	next: () => {
+      localStorage.removeItem('loggedUser');
+      localStorage.removeItem('tourId');
+      this.router.navigate(['/login']);
+    		}
+  		});
+	}
 }

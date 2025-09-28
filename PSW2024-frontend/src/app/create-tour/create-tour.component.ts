@@ -59,5 +59,9 @@ export class CreateTourComponent {
     return this.createTourForm.controls;
   	}
   
+    back()
+  	{
+    this.router.navigate(['/guideDrafts'])
+	}
 
 }

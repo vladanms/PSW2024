@@ -7,7 +7,9 @@ import org.ftn.PSW2024_backend.model.ComplaintStatusLog;
 import org.ftn.PSW2024_backend.repository.ComplaintRepository;
 import org.ftn.PSW2024_backend.repository.ComplaintStatusLogRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class ComplaintRebuilder {
     
 	@Autowired

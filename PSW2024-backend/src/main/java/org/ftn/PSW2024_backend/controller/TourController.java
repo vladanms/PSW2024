@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.ftn.PSW2024_backend.dto.GradeDTO;
 import org.ftn.PSW2024_backend.dto.KeyPointDTO;
 import org.ftn.PSW2024_backend.dto.ScheduleDTO;
 import org.ftn.PSW2024_backend.dto.TourDTO;
@@ -119,6 +120,16 @@ public class TourController {
         }
     }
     
+    @GetMapping("/getAllByGuide/{guide}")
+    public ResponseEntity<List<TourDTO>> getAllByGuide(@PathVariable String guide) {
+        try {
+            return new ResponseEntity<>(tourService.getAllByGuide(guide), HttpStatus.OK); 
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
     @GetMapping("/getAvailable/{tourist}")
     public ResponseEntity<List<TourDTO>> getAvailable(@PathVariable String tourist) {
         try {
@@ -129,16 +140,45 @@ public class TourController {
         }
     }
     
-    @DeleteMapping("/delete/{tourId}")
-    public ResponseEntity<String> deleteTour(@PathVariable Long id) {
-            return ResponseEntity.ok("OK");
+    @DeleteMapping("/deleteTour/{guideName}/{tourId}")
+    public ResponseEntity<Map <String, String>> deleteTour(@PathVariable String guideName, @PathVariable String tourId) {
+    	Map<String, String> response = new HashMap<>();
+        try {
+            String res = tourService.cancelTour(guideName, tourId);
+        	if(res.equals("forbidden"))
+        			{
+        				response.put("error", "You're not authorized to delete this tour");
+        				return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
+        			}
+        response.put("success", "Tour deleted");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+        	 e.printStackTrace();
+		     response.put("error", "An error occurred while processing your request.");
+		     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
+    
     
     @PostMapping("/purchaseTours/{touristName}/{usePoints}")
     public ResponseEntity<Map <String, String>> reserveTours(@PathVariable String touristName, @PathVariable boolean usePoints, @RequestBody String[] tourIds) {
     	Map<String, String> response = new HashMap<>();
         try {
             String result = tourService.purchaseTours(tourIds, touristName, usePoints);
+        	response.put("success", "Tours purchased");
+        	return new ResponseEntity<>(response, HttpStatus.OK);
+        } catch (Exception e) {
+        	 e.printStackTrace();
+		     response.put("error", "An error occurred while processing your request.");
+		     return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    @PostMapping("/gradeTour")
+    public ResponseEntity<Map <String, String>> gradeTour(@RequestBody GradeDTO gradeDTO) {
+    	Map<String, String> response = new HashMap<>();
+        try {
+            String result = tourService.gradeTour(gradeDTO);
         	response.put("success", "Tours purchased");
         	return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

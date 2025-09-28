@@ -1,9 +1,11 @@
 <html>
-	<header>			
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
 	</header>
-	<p></p>
-
-	<div class="register-form">
+	<div>
   <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
     <div>
       <label for="username">Username</label>
@@ -42,7 +44,6 @@
       <input id="confirmPassword" formControlName="confirmPassword" type="password" />
       <div *ngIf="formControls['confirmPassword'].invalid && formControls['confirmPassword']touched">Confirm Password is required.</div>
     </div>
-    <button type="submit" [disabled]="registerForm.invalid">Register</button>
     
     <div>
       <label>Interests</label>
@@ -61,11 +62,9 @@
         At least one interest must be selected.
       </div>
     </div>
-
+	    <button type="submit" [disabled]="registerForm.invalid">Register</button>
 
     <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
   </form>
-  
-  <button (click)="back()">Back</button>
 </div>
 </html>

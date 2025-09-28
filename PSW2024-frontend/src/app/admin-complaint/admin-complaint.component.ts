@@ -42,5 +42,10 @@ export class AdminComplaintComponent {
 	  this.complaintService.changeStatus(complaint.id, "Rejected");
 	  this.refresh();
   }
+  
+  back()
+  {
+	  this.router.navigate(['/guideDrafts'])
+  }
 
 }

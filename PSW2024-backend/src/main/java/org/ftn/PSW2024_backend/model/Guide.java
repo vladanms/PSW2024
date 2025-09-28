@@ -1,5 +1,6 @@
 package org.ftn.PSW2024_backend.model;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import javax.persistence.OneToMany;
 public class Guide extends User{
 	
 	@OneToMany(mappedBy = "guide",  cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Tour> tours;
+    private List<Tour> tours = new ArrayList<>();
 	
 	@Column(unique = false)
 	private int rewardPoints;

@@ -1,9 +1,10 @@
 <html>
-	<header>
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	<div class="subpage-header-component"></div>
 	</header>
 	<p></p>
 <div class="login-form">
-  <h2>Login</h2>
   <form (ngSubmit)="login()">
     <label for="username">Username:</label>
     <input type="text" id="username" [(ngModel)]="username" name="username" required><br>

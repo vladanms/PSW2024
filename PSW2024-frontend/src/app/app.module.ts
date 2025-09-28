@@ -32,6 +32,8 @@ import { TouristGradeComponent } from './tourist-grade/tourist-grade.component';
 import { TouristComplaintComponent } from './tourist-complaint/tourist-complaint.component';
 import { GuideComplaintComponent } from './guide-complaint/guide-complaint.component';
 import { AdminComplaintComponent } from './admin-complaint/admin-complaint.component';
+import { MainHeaderComponent } from './main-header/main-header.component';
+import { TouristInterestsComponent } from './tourist-interests/tourist-interests.component';
 
 @NgModule({
   declarations: [
@@ -51,6 +53,8 @@ import { AdminComplaintComponent } from './admin-complaint/admin-complaint.compo
     TouristComplaintComponent,
     GuideComplaintComponent,
     AdminComplaintComponent,
+    MainHeaderComponent,
+    TouristInterestsComponent,
   ],
   imports: [
     BrowserModule,

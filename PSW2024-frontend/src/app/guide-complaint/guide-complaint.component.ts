@@ -66,4 +66,9 @@ export class GuideComplaintComponent {
 	  this.complaintService.changeStatus(complaint.id, "ForReview");
 	  this.refresh();
   }
+  
+    back()
+  	{
+		  this.router.navigate(['/guideHomepage'])
+	}
 }

@@ -1,3 +1,13 @@
+
+<header class  = "subpage-header">			
+<div class  = "blocker"></div>
+	<div class="subpage-header-component">
+	<button (click) = "checkout()">Checkout</button>
+	<button (click) = "myTours()">My tours</button>
+	<button (click) = "logout()">Logout</button>
+	<button (click) = "editInterests()">My interests</button>
+	  </div>
+	</header>
 <div *ngFor="let tour of tours" class="tour-box">
   <div>
   <label><strong>{{ tour.name }}</strong></label>/

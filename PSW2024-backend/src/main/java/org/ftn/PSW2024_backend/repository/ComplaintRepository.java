@@ -19,8 +19,6 @@ public interface ComplaintRepository extends JpaRepository<Complaint, Long>{
 	List<Complaint> findAll();
 	Optional<Complaint> findById(Long id);
 	List<Complaint> findAllByGuide(Guide guide);
-	List<Complaint> findAllByGuideAndStatus(Guide guide, ComplaintStatus status);
 	List<Complaint> findAllByTourist(Tourist tourist);
-	List<Complaint> findAllByStatus(ComplaintStatus status);
 
 }

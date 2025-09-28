@@ -37,4 +37,10 @@ export class LoginService {
       );
   }
   
+   logout(): Observable<any> {
+    return this.http.post(`${this.apiHost}user/logout`, null, {
+      withCredentials: true
+    });
+    }
+  
 }

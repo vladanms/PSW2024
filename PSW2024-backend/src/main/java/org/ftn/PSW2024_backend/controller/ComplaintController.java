@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.mail.MessagingException;
 
 import org.ftn.PSW2024_backend.dto.ComplaintDTO;
+import org.ftn.PSW2024_backend.dto.FileComplaintDTO;
 import org.ftn.PSW2024_backend.dto.TourDTO;
 import org.ftn.PSW2024_backend.service.ComplaintService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(value = "complaints")
+@RequestMapping(value = "complaint")
 public class ComplaintController {
 
 	
@@ -33,7 +34,7 @@ public class ComplaintController {
 	
 
 	@PostMapping("/createComplaint")
-	public ResponseEntity<Map<String, String>> register(@RequestBody ComplaintDTO complaintDTO) throws MessagingException, UnsupportedEncodingException
+	public ResponseEntity<Map<String, String>> register(@RequestBody FileComplaintDTO complaintDTO) throws MessagingException, UnsupportedEncodingException
 	{
 
 		Map<String, String> response = new HashMap<>();

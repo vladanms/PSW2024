@@ -6,6 +6,7 @@ import { ComplaintDTO } from '../dto/ComplaintDTO';
 import { KeyPointDTO } from '../dto/KeyPointDTO';
 import * as Leaflet from 'leaflet';
 import { Router } from '@angular/router';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-guide-drafts',
@@ -15,9 +16,12 @@ import { Router } from '@angular/router';
 export class GuideDraftsComponent {
 
   tours: TourDTO[] = [];
+  filteredTours: TourDTO[] = [];
   selectedKeyPoint: KeyPointDTO | null = null;
-  constructor(private guideDraftsService: GuideDraftsService, private router: Router) {}
+  constructor(private guideDraftsService: GuideDraftsService, private router: Router,  private cdRef: ChangeDetectorRef) {}
   initializedMapIds = new Set<number>();
+  filterOptions = ["Published", "Draft", "All"]
+  filter: string = 'All';
 
   ngOnInit(): void 
   {
@@ -30,9 +34,11 @@ export class GuideDraftsComponent {
    this.guideDraftsService.getDrafts(guide).subscribe({
      next: (tours) => {
      	this.tours = tours;
+     	this.filterTours()
+     	this.cdRef.detectChanges();
      	setTimeout(() => {
-          	this.tours.forEach(tour => this.initMap(tour));
-        }, 0);
+          	this.filteredTours.forEach(tour => this.initMap(tour));
+        }, 50);
       },
       error: err => console.error('Error loading drafts', err)
     });
@@ -82,6 +88,24 @@ export class GuideDraftsComponent {
    selectKeyPoint(keypoint: KeyPointDTO) {
     this.selectedKeyPoint = keypoint;
   }
+  
+  filterTours(): void {
+      if( this.filter === 'Published')
+      {
+        this.filteredTours = this.tours.filter(tour => tour.published);
+        return;
+      }
+      if( this.filter === 'Draft')
+      {
+        this.filteredTours = this.tours.filter(tour => !tour.published);
+        return;
+      }
+      if( this.filter === 'All')
+      {
+        this.filteredTours = this.tours;
+        return;
+      }
+  }
 
   publishTour(tour : TourDTO): void 
   {
@@ -97,19 +121,27 @@ export class GuideDraftsComponent {
 
   deleteTour(tour : TourDTO): void 
   {
-  	this.guideDraftsService.delete(tour.id.toString()).subscribe(() => {
+	const guide = localStorage.getItem('loggedUser');
+    if (!guide) {
+      alert('Guide not found in localStorage');
+      return;
+   }
+  	this.guideDraftsService.delete(guide, tour.id.toString()).subscribe(() => {
     this.refresh();
   	});
   }
 
   refresh(): void 
   {
-    const guide = localStorage.getItem('guide');
+    const guide = localStorage.getItem('loggedUser');
     if (!guide) return;
     this.guideDraftsService.getDrafts(guide).subscribe(tours => {
       this.tours = tours;
+      this.filterTours();
       this.selectedKeyPoint = null;
-      setTimeout(() => this.tours.forEach(t => this.initMap(t)), 0);
+      this.initializedMapIds.clear();
+      this.cdRef.detectChanges();
+      setTimeout(() => this.filteredTours.forEach(t => this.initMap(t)), 50);
     });
   }
 
@@ -117,5 +149,10 @@ export class GuideDraftsComponent {
   {
 	  localStorage.setItem('tourId', tour.id.toString());
 	  this.router.navigate(['/addKeypoints']);
+  }
+  
+  back()
+  {
+	  this.router.navigate(['/guideHomepage'])
   }
 }

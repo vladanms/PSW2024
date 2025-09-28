@@ -53,8 +53,8 @@ export class AddKeypointsComponent {
      this.map.on('click', (event: Leaflet.LeafletEvent) => {
      const mouseEvent = event as Leaflet.LeafletMouseEvent;
 
-  	 const lat = parseFloat(mouseEvent.latlng.lat.toFixed(2));  
-  	 const lng = parseFloat(mouseEvent.latlng.lng.toFixed(2));  
+  	 const lat = mouseEvent.latlng.lat;  
+  	 const lng = mouseEvent.latlng.lng;  
 
 
         this.addKeypointForm.patchValue({
@@ -124,4 +124,9 @@ export class AddKeypointsComponent {
       	image: file
     	});
   	}
+  	
+  	back()
+  	{
+		  this.router.navigate(['/guideDrafts'])
+	}
 }

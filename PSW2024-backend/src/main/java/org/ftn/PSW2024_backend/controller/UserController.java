@@ -94,5 +94,22 @@ public class UserController {
 	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
 	        }
 	 }
+	 
+	 @PostMapping("/setInterests/{tourist}/{interests}")
+	 public ResponseEntity<Map<String, String>> setInterests(@PathVariable String tourist, @PathVariable String[] interests)
+	 {
+		 Map<String, String> response = new HashMap<>();
+		 
+			try {
+				String res = userService.setInterests(tourist, interests);
+
+			response.put("success", "Succesfully updated");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+			 } catch (Exception e) {
+			        e.printStackTrace();
+			        response.put("error", "An error occurred while processing your request.");
+			        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			    }
+	 }
 	
 }

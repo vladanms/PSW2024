@@ -6,6 +6,9 @@ import { ComplaintDTO } from '../dto/ComplaintDTO';
 import { KeyPointDTO } from '../dto/KeyPointDTO';
 import * as Leaflet from 'leaflet';
 import { Router } from '@angular/router';
+import { LoginService } from '../service/login.service';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 
 @Component({
@@ -17,7 +20,7 @@ export class RegisteredHomepageComponent {
 	
   tours: TourDTO[] = [];
   selectedKeyPoint: KeyPointDTO | null = null;
-  constructor(private registeredHomepageService: RegisteredHomepageService, private router: Router) {}
+  constructor(private registeredHomepageService: RegisteredHomepageService, private router: Router, private loginService : LoginService, private cdRef : ChangeDetectorRef) {}
   initializedMapIds = new Set<number>();
 
   ngOnInit(): void 
@@ -31,9 +34,10 @@ export class RegisteredHomepageComponent {
    this.registeredHomepageService.getAvailable(tourist).subscribe({
      next: (tours) => {
      	this.tours = tours;
+     	this.cdRef.detectChanges();
      	setTimeout(() => {
           	this.tours.forEach(tour => this.initMap(tour));
-        }, 0);
+        }, 50);
       },
       error: err => console.error('Error loading tours', err)
     });
@@ -87,6 +91,7 @@ export class RegisteredHomepageComponent {
   AddToCart(tour: TourDTO): void 
   {
   	let tourIds: number[] = JSON.parse(localStorage.getItem('tourIds') || '[]');
+  	let tourPrices: number [] = JSON.parse(localStorage.getItem('tourPrices') || '[]');
   	let totalPrice: number = JSON.parse(localStorage.getItem('totalPrice') || '0');
   	let cart : string[] = JSON.parse(localStorage.getItem('cart') || '[]');
   	
@@ -94,10 +99,12 @@ export class RegisteredHomepageComponent {
   	{
    	 	tourIds.push(tour.id);
    	 	cart.push(tour.name);
+   	 	tourPrices.push(tour.price);
    	 	totalPrice = totalPrice + tour.price;
     	localStorage.setItem('tourIds', JSON.stringify(tourIds));
     	localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
     	localStorage.setItem('cart', JSON.stringify(cart));
+    	localStorage.setItem('tourPrices', JSON.stringify(tourPrices));
     }
   this.refresh();
   }
@@ -105,25 +112,28 @@ export class RegisteredHomepageComponent {
   RemoveFromCart(tour: TourDTO): void 
   {
     let tourIds = JSON.parse(localStorage.getItem('tourIds') || '[]');
-    let totalPrice: number = JSON.parse(localStorage.getItem('totalPrice') || '0');
+    let tourPrices = JSON.parse(localStorage.getItem('tourPrices') || '[]');
+    let totalPrice = JSON.parse(localStorage.getItem('totalPrice') || '0');
     let cart : string[] = JSON.parse(localStorage.getItem('cart') || '[]');
     
     const index = tourIds.indexOf(tour.id);
     
     tourIds.splice(index, 1); 
     cart.splice(index, 1);
+    tourPrices.splice(index, 1);
     totalPrice = totalPrice- tour.price; 
     
     localStorage.setItem('tourIds', JSON.stringify(tourIds)); 
     localStorage.setItem('totalPrice', JSON.stringify(totalPrice));
     localStorage.setItem('cart', JSON.stringify(cart));
+    localStorage.setItem('tourPrices', JSON.stringify(tourPrices));
     this.refresh();  
   }
   
   isInCart(tour: TourDTO): boolean 
   {
-  	const cart: number[] = JSON.parse(localStorage.getItem('cart') || '[]');
-  	return cart.includes(tour.id);
+  	const tourIds: number[] = JSON.parse(localStorage.getItem('tourIds') || '[]');
+  	return tourIds.includes(tour.id);
   }
 
   refresh(): void 
@@ -133,10 +143,35 @@ export class RegisteredHomepageComponent {
     this.registeredHomepageService.getAvailable(tourist).subscribe(tours => {
       this.tours = tours;
       this.selectedKeyPoint = null;
-      setTimeout(() => this.tours.forEach(t => this.initMap(t)), 0);
+      this.cdRef.detectChanges();
+      setTimeout(() => this.tours.forEach(t => this.initMap(t)), 50);
     });
+  }  
+  
+  checkout() : void
+  {
+	  this.router.navigate(['/touristCheckout'])
   }
+  
+  myTours() : void
+  {
+	  this.router.navigate(['/touristTours'])
+  }
+  
+  logout(): void 
+	{
+  	this.loginService.logout().subscribe({
+    	next: () => {
+      localStorage.removeItem('loggedUser');
+      localStorage.removeItem('tourId');
+      this.router.navigate(['/login']);
+    		}
+  		});
+	}
 
-
+	editInterests() : void
+	{
+		this.router.navigate(['/touristInterests'])
+	}
 
 }
