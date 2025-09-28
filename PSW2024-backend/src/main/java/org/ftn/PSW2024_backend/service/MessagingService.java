@@ -20,7 +20,7 @@ public class MessagingService {
 	@Autowired
 	private JavaMailSender sender;
 	
-	String senderMail;
+	String senderMail = "vladans995@gmail.com"; //SET THIS TO YOUR EMAIL
 
 	public void purchaseConfirmationMail(Tourist recipient, String[] tours) throws MessagingException, UnsupportedEncodingException 
 	{

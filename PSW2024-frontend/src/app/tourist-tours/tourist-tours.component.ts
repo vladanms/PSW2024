@@ -98,7 +98,7 @@ export class TouristToursComponent {
 	
 	back()
   	{
-		  this.router.navigate(['/touristHomepage'])
+		  this.router.navigate(['/registeredHomepage'])
 	}
 
 }

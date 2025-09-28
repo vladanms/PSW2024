@@ -5,14 +5,15 @@
 		<button (click) = "back()">Back</button>
 	  </div>
 	</header>
+	<div  class  = "checkout-box">
 	 <div>
     <label>
       Use Reward Points
       <input type="checkbox" [(ngModel)]="useRewardPoints" (change)="toggleRewardPoints($event)">
     </label>
+    <hr>
   </div>
-<div>
-  <h2>Cart:</h2>
+  <label>Cart:</label>
   <div *ngFor="let tour of tours">
     <div>
       <label>{{ tour.name }}</label> - 
@@ -21,14 +22,14 @@
     </div>
   </div>
   <div>
-    <h3>Total Price: 
+	  <hr>
+    <label>Total Price: 
       <span>{{ finalPrice }}</span>
       <span *ngIf="useRewardPoints"> - 
         <span>{{ rewardPoints }}</span>         
       </span>
- 	</h3>
+ 	</label>
 </div>
   <button (click)="checkout()">Purchase</button>
 </div>
 </html>
-/

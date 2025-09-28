@@ -6,7 +6,7 @@
 	  </div>
 	</header>
 	<p></p>
-	<form [formGroup]="createComplaintForm" (ngSubmit)="onSubmit()">
+	<form [formGroup]="createComplaintForm" (ngSubmit)="onSubmit()" class = "checkout-box">
     <div>
     	 <label for="name">Name</label>
      	 <input id="name" formControlName="name" type="text" />	

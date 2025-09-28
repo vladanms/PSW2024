@@ -1,0 +1,22 @@
+<html>
+	<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
+	</header>
+<div *ngFor="let complaint of complaints"  class  = "complaint-box">
+  <div>
+  <p>Author: {{ complaint.tourist }}</p>
+  <p>Name: {{ complaint.name }}</p>
+  <p>Description: {{ complaint.description }}</p>
+  </div>
+
+  <div>
+  <label *ngIf="isResolved(complaint)">Resolved</label>
+  <label *ngIf="isRejected(complaint)">Rejected</label>
+  <label *ngIf="isForReview(complaint)">Pending review</label>
+ <label  *ngIf="isOnHold(complaint)">On hold</label>
+  </div>
+</div>
+</html>

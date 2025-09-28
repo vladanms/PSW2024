@@ -18,15 +18,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.ForbiddenException;
 
 import org.ftn.PSW2024_backend.model.User;
 import org.ftn.PSW2024_backend.service.UserService;
 import org.ftn.PSW2024_backend.dto.LoginDTO;
+import org.ftn.PSW2024_backend.dto.MaliciousDTO;
 import org.ftn.PSW2024_backend.dto.RegisterDTO;
 
 
@@ -49,6 +52,9 @@ public class UserController {
 	            response.put("type", user.getType());
 	            return ResponseEntity.ok(response);
 	        } catch (BadCredentialsException e) {
+	            response.put("error", e.getMessage());
+	            return ResponseEntity.badRequest().body(response);
+	        } catch (ForbiddenException e) {
 	            response.put("error", e.getMessage());
 	            return ResponseEntity.badRequest().body(response);
 	        } catch (Exception e) {
@@ -111,5 +117,38 @@ public class UserController {
 			        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 			    }
 	 }
-	
+	 
+	 @GetMapping("/getMaliciousUsers")
+	 public ResponseEntity<List<MaliciousDTO>> getMaliciousUsers()
+	 {
+		 try {
+	          return new ResponseEntity<>(userService.getMaliciousUsers(), HttpStatus.OK); 
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	 }
+	 
+	 @PostMapping("/banUser/{username}")
+	 public ResponseEntity<Map<String, String>> banUser(@PathVariable String username)
+	 {
+		 Map<String, String> response = new HashMap<>();
+		 
+			try {
+				Boolean res = userService.banUser(username);
+				if (res) 
+				{
+					response.put("success", "User banned");
+				}
+				if(!res) 
+				{
+					response.put("success", "User unbanned");
+				}
+			return new ResponseEntity<>(response, HttpStatus.OK);
+			 } catch (Exception e) {
+			        e.printStackTrace();
+			        response.put("error", "An error occurred while processing your request.");
+			        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+			    }
+	 }
 }

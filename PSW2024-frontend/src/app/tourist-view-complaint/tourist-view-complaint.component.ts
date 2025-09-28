@@ -4,39 +4,28 @@ import { ComplaintDTO } from '../dto/ComplaintDTO';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-guide-complaint',
-  templateUrl: './guide-complaint.component.html',
-  styleUrl: './guide-complaint.component.css'
+  selector: 'app-tourist-view-complaint',
+  templateUrl: './tourist-view-complaint.component.html',
+  styleUrl: './tourist-view-complaint.component.css'
 })
-export class GuideComplaintComponent {
-	
-  complaints : ComplaintDTO[] = [];	
+export class TouristViewComplaintComponent {
+complaints : ComplaintDTO[] = [];	
 
   constructor(private complaintService: ComplaintService, private router: Router) {}
 
   ngOnInit(): void 
   {
-    const guide = localStorage.getItem('loggedUser');
-    if (!guide) {
-      alert('Guide not found in localStorage');
+    const tourist = localStorage.getItem('loggedUser');
+    if (!tourist) {
+      alert('Tourist not found in localStorage');
       return;
    }
 
-   this.complaintService.getByGuide(guide).subscribe({
+   this.complaintService.getByTourist(tourist).subscribe({
      next: (complaints) => {
      	this.complaints = complaints;
       },
       error: err => console.error('Error loading complaints', err)
-    });
-  }
-  
-  refresh(): void 
-  {
-    const guide = localStorage.getItem('guide');
-    if (!guide) return;
-    this.complaintService.getByGuide(guide).subscribe(complaints => {
-      this.complaints = complaints;
-
     });
   }
   
@@ -60,20 +49,6 @@ export class GuideComplaintComponent {
   return complaint.status === 'OnHold';
   }
   
-  resolve(complaint : ComplaintDTO) : void
-  {
-	  this.complaintService.changeStatus(complaint.id, "Resolved").subscribe(() => {
-        this.refresh();
-    });
-
-  }
-  
-  forReview(complaint : ComplaintDTO) : void
-  {
-	  this.complaintService.changeStatus(complaint.id, "ForReview").subscribe(() => {
-        this.refresh();
-    });
-  }
   
     back()
   	{

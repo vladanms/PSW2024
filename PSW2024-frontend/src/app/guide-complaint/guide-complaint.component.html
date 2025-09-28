@@ -5,7 +5,7 @@
 		<button (click) = "back()">Back</button>
 	  </div>
 	</header>
-<div *ngFor="let complaint of complaints">
+<div *ngFor="let complaint of complaints"  class  = "complaint-box">
   <div>
   <p>Author: {{ complaint.tourist }}</p>
   <p>Name: {{ complaint.name }}</p>
@@ -16,11 +16,11 @@
   <label *ngIf="isResolved(complaint)">Resolved</label>
   <label *ngIf="isRejected(complaint)">Rejected</label>
   <label *ngIf="isForReview(complaint)">Pending review</label>
-  <ng-container *ngIf="!(isResolved(complaint) || isRejected(complaint))">
+  <div>  </div>
+  <ng-container *ngIf="isOnHold(complaint)">
     <button (click)="resolve(complaint)">Resolved</button>
     <button (click)="forReview(complaint)">For Review</button>
   </ng-container>
   </div>
 </div>
 </html>
-/

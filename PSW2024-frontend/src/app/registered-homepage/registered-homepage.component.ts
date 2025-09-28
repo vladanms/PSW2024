@@ -158,6 +158,11 @@ export class RegisteredHomepageComponent {
 	  this.router.navigate(['/touristTours'])
   }
   
+   myComplaints() : void
+  {
+	  this.router.navigate(['/touristViewComplaints'])
+  }
+  
   logout(): void 
 	{
   	this.loginService.logout().subscribe({

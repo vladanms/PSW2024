@@ -1,5 +1,6 @@
 package org.ftn.PSW2024_backend.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,15 +38,36 @@ public class ComplaintService {
 	
 	public String createComplaint(FileComplaintDTO complaintDTO) 
 	{
+		
 	     Complaint complaint = new Complaint( 
 	        (Tourist) users.findByUsername(complaintDTO.getTourist()),
 	        (Guide) users.findByUsername(complaintDTO.getGuide()),
 	        tours.findById(Long.parseLong(complaintDTO.getTourId())).orElse(null),
 	       	complaintDTO.getName(),
-	       	complaintDTO.getDescription()
+	       	complaintDTO.getDescription()	       	
 	        );
-	        	        
-	        complaints.save(complaint); 
+
+	     	if(LocalDateTime.now().isBefore(complaint.getTour().getTime()))
+	     	{
+	     		return "tooEarlyError";
+	     	}
+	     	
+	     	if(LocalDateTime.now().isAfter(complaint.getTour().getTime().plusDays(30)))
+	     	{
+	     		return "tooLateError";
+	     	}
+	     	
+	     	
+	        Complaint saved = complaints.save(complaint); 
+	        
+	        ComplaintStatusLog initialLog = new ComplaintStatusLog(
+	    		    saved.getId(), 
+	    		    ComplaintStatus.OnHold, 
+	    		    ComplaintStatus.OnHold
+	    		);
+
+	    	logs.save(initialLog);
+	        
 	        return "success";
 	}
 	   
@@ -84,6 +106,37 @@ public class ComplaintService {
 		
 		for(Complaint complaint : complaints.findAllByGuide((Guide) users.findByUsername(guideName)))
 		{
+			List<ComplaintStatusLog> statusLogs = logs.findByComplaintIdOrderByTimestampAsc(complaint.getId());
+			  for (ComplaintStatusLog log : statusLogs) {
+		            complaint.applyStatusChangeEvent(log.toDomainEvent());
+		        }
+			
+			ComplaintDTO dto = new ComplaintDTO(
+					complaint.getId().toString(),
+					complaint.getTourist().getUsername(),
+					complaint.getGuide().getUsername(),
+					complaint.getName(),
+					complaint.getStatus().toString(),
+					complaint.getDescription(),
+					complaint.getStatus().toString()
+					);
+			
+			complaintDTOs.add(dto);
+		}
+		return complaintDTOs;
+	}
+	
+	public List<ComplaintDTO> findAllByTourist(String touristName)
+	{
+		List<ComplaintDTO> complaintDTOs = new ArrayList<ComplaintDTO>();
+		
+		for(Complaint complaint : complaints.findAllByTourist((Tourist) users.findByUsername(touristName)))
+		{
+			List<ComplaintStatusLog> statusLogs = logs.findByComplaintIdOrderByTimestampAsc(complaint.getId());
+			  for (ComplaintStatusLog log : statusLogs) {
+		            complaint.applyStatusChangeEvent(log.toDomainEvent());
+		        }
+			
 			ComplaintDTO dto = new ComplaintDTO(
 					complaint.getId().toString(),
 					complaint.getTourist().getUsername(),

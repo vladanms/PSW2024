@@ -1,4 +1,11 @@
-<div *ngFor="let complaint of complaints">
+<html>
+		<header class  = "subpage-header">			
+	<div class  = "blocker"></div>
+	  <div class="subpage-header-component">
+		<button (click) = "back()">Back</button>
+	  </div>
+	</header>
+	<div *ngFor="let complaint of complaints" class  = "complaint-box">
   <div>
   <p>Author: {{ complaint.tourist }}</p>
   <p>Name: {{ complaint.name }}</p>
@@ -10,4 +17,4 @@
   <button (click)="reject(complaint)">Reject</button>
   </div>
 </div>
-  <button (click) = "back()">Back</button>
+</html>

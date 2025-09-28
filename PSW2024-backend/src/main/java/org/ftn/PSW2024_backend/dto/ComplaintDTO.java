@@ -16,6 +16,7 @@ public class ComplaintDTO {
     
 	public ComplaintDTO(String id, String tourist, String guide, String tourId, String name, String description, String status) {
 		super();
+		this.id = id;
 		this.tourist = tourist;
 		this.guide = guide;
 		this.tourId = tourId;

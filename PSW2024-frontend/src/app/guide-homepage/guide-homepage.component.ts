@@ -21,10 +21,11 @@ constructor(private router: Router, private loginService : LoginService) { }
 		this.router.navigate(['/guideDrafts']);
 	};
 	
-	viewTours()
+	viewComplaints()
   	{
-		this.router.navigate(['/register']);
+		this.router.navigate(['/guideComplaints']);
 	};
+	
 	logout(): void 
 	{
   	this.loginService.logout().subscribe({

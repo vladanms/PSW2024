@@ -61,7 +61,16 @@ public class SecurityConfig{
                 .httpBasic(basic -> basic.disable())
                 .authorizeHttpRequests(authz -> authz
                                 .antMatchers("/user/login", "/user/register").permitAll()
-                                .antMatchers("/tour/**").permitAll()
+                                .antMatchers("/user/getRewardPoints/**", "/user/setInterests/**").hasRole("TOURIST")
+                                .antMatchers("/user/getMaliciousUsers", "/user/banUser/**").hasRole("ADMIN")
+                                .antMatchers("/tour/createTour", "/tour/publishTour/**", "/tour/addKeypoint",
+                                		"/tour/cancelTour/**", "/tour/getDrafts/**", "/tour/getAllByGuide/**").hasRole("GUIDE")
+                                .antMatchers("/tour/createTour", "/tour/publishTour/**", "/tour/addKeypoint",
+                                		"/tour/getAvailable/**", "/tour/purchaseTours/**", "/tour/getPurchased/**", "/tour/gradeTour" ).hasRole("TOURIST")
+                                .antMatchers("/complaint/createComplaint", "/complaint/getByTourist/**").hasRole("TOURIST")
+                                .antMatchers("/complaint/getByGuide/**").hasRole("GUIDE")
+                                .antMatchers("/complaint/getByStatus/**").hasRole("ADMIN")
+                                .antMatchers("/complaint/updateStatus/**").hasAnyRole("GUIDE", "ADMIN")
                 )
                 .formLogin(login -> login.disable())
                 .logout(logout -> logout

@@ -178,7 +178,17 @@ public class TourController {
     public ResponseEntity<Map <String, String>> gradeTour(@RequestBody GradeDTO gradeDTO) {
     	Map<String, String> response = new HashMap<>();
         try {
-            String result = tourService.gradeTour(gradeDTO);
+            String res = tourService.gradeTour(gradeDTO);
+            if(res.equals("tooEarlyError"))
+			{
+				response.put("error", "You can only grade tours you've already attended");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
+			if(res.equals("tooLateError"))
+			{
+				response.put("error", "You can only grade tours you've attended in last 30 days");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
         	response.put("success", "Tours purchased");
         	return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception e) {

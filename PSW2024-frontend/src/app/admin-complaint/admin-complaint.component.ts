@@ -33,19 +33,21 @@ export class AdminComplaintComponent {
   
   onHold(complaint : ComplaintDTO) : void
   {
-	  this.complaintService.changeStatus(complaint.id, "OnHold");
-	  this.refresh();
+	  this.complaintService.changeStatus(complaint.id, "OnHold").subscribe(() => {
+        this.refresh();
+    });
   }
   
   reject(complaint : ComplaintDTO) : void
   {
-	  this.complaintService.changeStatus(complaint.id, "Rejected");
-	  this.refresh();
+	  this.complaintService.changeStatus(complaint.id, "Rejected").subscribe(() => {
+        this.refresh();
+    });
   }
   
   back()
   {
-	  this.router.navigate(['/guideDrafts'])
+	  this.router.navigate(['/adminHomepage'])
   }
 
 }

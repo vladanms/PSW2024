@@ -57,6 +57,10 @@ public class Complaint {
     
     public ComplaintStatusUpdatedEvent updateStatus(ComplaintStatus status) {
         ComplaintStatus oldStatus = this.status;
+        if(this.status == null)
+        {
+        	oldStatus = ComplaintStatus.OnHold;
+        }
         this.status = status;
         return new ComplaintStatusUpdatedEvent(this.id, oldStatus, status);
     }

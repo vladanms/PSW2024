@@ -41,6 +41,16 @@ public class ComplaintController {
 		
 		try {
 			String res = complaintService.createComplaint(complaintDTO);
+			if(res.equals("tooEarlyError"))
+			{
+				response.put("error", "You can only complain on tours you've already attended");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
+			if(res.equals("tooLateError"))
+			{
+				response.put("error", "You can only complain on tours you've attended in last 30 days");
+				return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+			}
 
 		response.put("success", "Complaint filed");
 		return new ResponseEntity<>(response, HttpStatus.OK);
@@ -61,6 +71,16 @@ public class ComplaintController {
 	        }
 	    }
 	 
+	 @GetMapping("/getByTourist/{tourist}")
+	 public ResponseEntity<List<ComplaintDTO>> getByTourist(@PathVariable String tourist) {
+	        try {
+	            return new ResponseEntity<>(complaintService.findAllByTourist(tourist), HttpStatus.OK); 
+	        } catch (Exception e) {
+	            e.printStackTrace();
+	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+	        }
+	    }
+	 
 	 @GetMapping("/getByStatus/{status}")
 	 public ResponseEntity<List<ComplaintDTO>> getByStatus(@PathVariable String status) {
 	        try {
@@ -71,7 +91,7 @@ public class ComplaintController {
 	        }
 	    }
 	 
-	 @PostMapping("/changeStatus/{complaintId}/{status}")
+	 @PostMapping("/updateStatus/{complaintId}/{status}")
 	 public ResponseEntity<Map<String, String>> changeStatus(@PathVariable String complaintId, @PathVariable String status) {
 	        Map<String, String> response = new HashMap<>();        
 	        try {

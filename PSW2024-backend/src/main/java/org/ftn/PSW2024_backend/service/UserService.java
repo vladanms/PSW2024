@@ -28,6 +28,7 @@ import org.ftn.PSW2024_backend.model.*;
 import org.ftn.PSW2024_backend.repository.UserRepository;
 import org.ftn.PSW2024_backend.dto.RegisterDTO;
 import org.ftn.PSW2024_backend.dto.LoginDTO;
+import org.ftn.PSW2024_backend.dto.MaliciousDTO;
 
 @Service
 public class UserService{
@@ -41,6 +42,9 @@ public class UserService{
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	
+	@Autowired
+	private MessagingService messagingService;
+	
 	
 	public String getUserType(String username)
 	{
@@ -52,10 +56,10 @@ public class UserService{
 			 User user = users.findByUsername(loginDTO.getUsername());
 
 			 if (user instanceof Guide && ((Guide) user).isBanned()) {
-		            throw new BadCredentialsException("Your account has been banned.");
+		            throw new ForbiddenException("Your account has been banned.");
 		        }
 			 if (user instanceof Tourist && ((Tourist) user).isBanned()) {
-		            throw new BadCredentialsException("Your account has been banned.");
+		            throw new ForbiddenException("Your account has been banned.");
 		        }
 			  Authentication auth = authenticationManager.authenticate(
 			            new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword())
@@ -112,6 +116,66 @@ public class UserService{
 		tourist.setInterests(userInterests);
 		users.save(tourist);
 		return "success";
+	}
+	
+	public List<MaliciousDTO> getMaliciousUsers()
+	{		List<MaliciousDTO> maliciousList = new ArrayList<MaliciousDTO>();
+		
+		for(User user : users.findAllMaliciousGuides())
+		{
+			Guide guide = (Guide) user;
+			maliciousList.add(new MaliciousDTO(user.getUsername(), user.getType(), guide.getPenaltyPoints(), guide.isBanned()));
+
+		}
+		
+		for(User user : users.findAllMaliciousTourists())
+		{
+
+			Tourist tourist = (Tourist) user;
+			maliciousList.add(new MaliciousDTO(user.getUsername(), user.getType(), tourist.getPenaltyPoints(), tourist.isBanned()));
+		}		
+			
+			return maliciousList;
+	}
+	
+	public boolean banUser(String username)
+	{
+		User user = users.findByUsername(username);
+		
+		if (user instanceof Guide) {
+			if(!((Guide) user).isBanned())
+			{
+				try {
+					messagingService.bannedMail(user);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			((Guide) user).setBanned(!((Guide) user).isBanned());
+			users.save(((Guide) user));
+			return ((Guide) user).isBanned();
+		}
+		if (user instanceof Tourist) {
+			if(!((Tourist) user).isBanned())
+			{
+				try {
+					messagingService.bannedMail(user);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			((Tourist) user).setBanned(!((Tourist) user).isBanned());
+			users.save(((Tourist) user));
+			return ((Tourist) user).isBanned();
+		}
+		throw new InternalError("Error");
+		
 	}
 
 }

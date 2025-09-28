@@ -5,17 +5,17 @@
 		<button (click) = "back()">Back</button>
 	  </div>
 	</header>
-<form (ngSubmit)="onSubmit()" class="grade-form">
+<form (ngSubmit)="onSubmit()" class="checkout-box">
 
   <label><strong>Your grade:</strong></label>
   <select [(ngModel)]="selectedGrade" name="grade">
     <option [ngValue]="null" disabled>Select grade</option>
     <option *ngFor="let option of gradesOptions" [ngValue]="option">{{ option }}</option>
   </select>
-
+<br>
   <label><strong>Description:</strong></label>
   <textarea [(ngModel)]="description" name="content"></textarea>
-
+<br>
   <button type="submit" [disabled]="!isValid()">Submit Grade</button>
 </form>
 </html>

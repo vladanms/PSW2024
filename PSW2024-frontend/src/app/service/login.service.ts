@@ -38,6 +38,7 @@ export class LoginService {
   }
   
    logout(): Observable<any> {
+	   localStorage.clear();
     return this.http.post(`${this.apiHost}user/logout`, null, {
       withCredentials: true
     });

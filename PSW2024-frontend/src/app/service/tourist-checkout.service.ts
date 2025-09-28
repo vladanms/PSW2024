@@ -20,6 +20,6 @@ export class TouristCheckoutService {
   	}
   	
   	reserveTours(touristName: string, usePoints: boolean, tourIds: string[]): Observable<string> {
-    return this.http.post<string>(`${this.apiHost}tour/purchaseTours/${touristName}/${usePoints}`, tourIds);
+    return this.http.post<string>(`${this.apiHost}tour/purchaseTours/${touristName}/${usePoints}`, tourIds, {withCredentials: true});
   }
 }

@@ -56,9 +56,9 @@ public class TourService {
 //GUIDE FUNCTIONS===========================================================================		
 	public String scheduleTour(ScheduleDTO scheduleDTO)
 	{
-		if (scheduleDTO.getTime().isBefore(LocalDateTime.now().plusHours(48))) {
+		/*if (scheduleDTO.getTime().isBefore(LocalDateTime.now().plusHours(48))) {
             return "timeError";
-        }
+        }*/
 		
 		 Tour tour = new Tour(
 		            scheduleDTO.getName(),
@@ -408,6 +408,16 @@ public class TourService {
 		{
 			return "error";
 		}
+		
+     	if(LocalDateTime.now().isBefore(tour.getTime()))
+     	{
+     		return "tooEarlyError";
+     	}
+     	
+     	if(LocalDateTime.now().isAfter(tour.getTime().plusDays(30)))
+     	{
+     		return "tooLateError";
+     	}
 		
 		Grade grade = new Grade(gradeDTO.getTourist(), gradeDTO.getContent(), gradeDTO.getGrade());
 		

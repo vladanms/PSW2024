@@ -16,9 +16,16 @@ public interface UserRepository extends JpaRepository<User, Long>{
 	User findByEmail(String email);
 	User findByUsername(String username);
 	
-	@Query("SELECT u FROM User u WHERE TYPE(u) = Tourist")
-	List<User> findAllTourists();
-	
-	@Query("SELECT u FROM User u WHERE TYPE(u) = Guide")
-	List<User> findAllGuides();
+    @Query("SELECT u FROM User u WHERE TYPE(u) = Tourist")
+    List<User> findAllTourists();
+
+    @Query("SELECT u FROM User u WHERE TYPE(u) = Guide")
+    List<User> findAllGuides();
+    
+    @Query("SELECT t FROM Tourist t WHERE t.penaltyPoints >= 10")
+    List<User> findAllMaliciousTourists();
+    
+    @Query("SELECT g FROM Guide g WHERE g.penaltyPoints >= 10")
+    List<User> findAllMaliciousGuides();
+  
 }
